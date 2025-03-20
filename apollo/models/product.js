@@ -17,7 +17,6 @@ class Product {
                 return;
             }
 
-            console.log("products: ", res);
             result(null, res);
         });
     }
@@ -31,7 +30,6 @@ class Product {
             }
 
             if (res.length) {
-                console.log("found product: ", res[0]);
                 result(null, res[0]);
                 return;
             }
@@ -48,7 +46,6 @@ class Product {
                 return;
             }
 
-            console.log("found products: ", res);
             result(null, res);
         });
     }
