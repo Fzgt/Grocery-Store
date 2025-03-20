@@ -8,9 +8,4 @@ const pool = mysql.createPool({
     database: dbConfig.DB
 });
 
-pool.connect(error => {
-    if (error) throw error;
-    console.log("Successfully connected to the database.");
-});
-
 module.exports = pool;

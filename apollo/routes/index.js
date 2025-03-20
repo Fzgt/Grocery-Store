@@ -1,9 +1,7 @@
-const router = require("express").Router();
+module.exports = app => {
+    const products = require("../controllers/productController.js");
 
-const {
-  authController
-} = require('../controllers/controller.js');
-
-
-
-module.exports = router;
+    app.get("/api/products", products.findAll);
+    app.get("/api/products/name/:name", products.findByName);
+    app.get("/api/products/:id", products.findOne);
+};

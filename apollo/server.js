@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to products API application." });
 });
 
-require("./routes/productRoutes")(app);
+require("./routes/index.js")(app);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

@@ -36,7 +36,6 @@ class Product {
                 return;
             }
 
-            // Not found
             result({ kind: "not_found" }, null);
         });
     }
