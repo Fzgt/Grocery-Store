@@ -1,9 +1,7 @@
 import {
     Flex,
     Box,
-    Text,
     Heading,
-    Card,
     TextField,
     Container,
     IconButton,
@@ -22,7 +20,7 @@ const Navbar = () => (
         <Container size="4">
             <Flex justify="between" align="center">
                 <Flex align="center" gap="4">
-                    <Heading size="5" as="h1">ShopRadix</Heading>
+                    <Heading size="5" as="h1">BeyzMarket</Heading>
                     <Flex display={{ initial: 'none', md: 'flex' }} gap="6">
                         <Link size="2">首页</Link>
                         <Link size="2">商品分类</Link>
