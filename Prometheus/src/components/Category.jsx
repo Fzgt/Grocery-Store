@@ -1,7 +1,7 @@
 // Category.jsx
 import { useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { productsAtom, categoryAtom } from '../atoms';
+import { productsAtom, categoryAtom } from '../store/atoms';
 import { Box, Flex, Button, Text, Heading, Card, Badge } from '@radix-ui/themes';
 import { MagnifyingGlassIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 
@@ -111,8 +111,10 @@ const Category = () => {
                 </Flex>
 
                 <Box mt="auto">
-                    <Badge size="1" variant="outline" color="gray" radius="full" style={{ width: '100%', textAlign: 'center' }}>
-                        {categories.length} 个分类
+                    <Badge size="1" variant="outline" color="gray" radius="full" style={{ width: '100%' }}>
+                        <Text align='center' as='div' style={{ width: '100%' }}>
+                            {categories.length} categories
+                        </Text>
                     </Badge>
                 </Box>
             </Flex>
