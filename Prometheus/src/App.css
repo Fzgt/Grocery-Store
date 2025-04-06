@@ -2,7 +2,18 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--gray-1);
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .product-card {
@@ -11,7 +22,33 @@ body {
 
 .product-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Home page grid layout */
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.category-container {
+  grid-column: span 1;
+}
+
+.products-container {
+  grid-column: span 3;
+}
+
+@media (max-width: 768px) {
+  .home-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .category-container,
+  .products-container {
+    grid-column: span 1;
+  }
 }
 
 /* 让滚动条更美观 */
@@ -21,15 +58,79 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--gray-3);
+  background: #333333;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--gray-6);
+  background: #555555;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--gray-8);
+  background: #777777;
+}
+
+/* Radix UI Toast animations */
+@keyframes overlayShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes contentShow {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(calc(100% + 20px));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(100% + 20px));
+  }
+}
+
+@keyframes swipeOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(100% + 20px));
+  }
+}
+
+/* Toast viewport styles */
+[data-radix-toast-viewport] {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+  gap: 10px;
+  max-width: 100vw;
+  margin: 0;
+  list-style: none;
+  z-index: 9999;
+  outline: none;
 }

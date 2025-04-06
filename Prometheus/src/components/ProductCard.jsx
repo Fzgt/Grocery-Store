@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useAtom } from 'jotai';
+import { cartAtom } from '../store/atoms';
 import {
     Box,
     Card,
@@ -10,18 +12,53 @@ import {
 } from '@radix-ui/themes';
 import { HeartIcon, PlusIcon, MinusIcon } from '@radix-ui/react-icons';
 
-const ProductCard = ({ product }) => {
-    const [quantity, setQuantity] = useState(0);
+const ProductCard = ({ product, onViewDetails }) => {
+    const [cart, setCart] = useAtom(cartAtom);
+    
+    // 查找商品在购物车中的数量
+    const cartItem = cart.find(item => item.id === product.id);
+    const quantity = cartItem ? cartItem.quantity : 0;
 
     const handleAddToCart = (e) => {
         e.stopPropagation();
-        setQuantity(prev => prev + 1);
+        
+        // 检查商品是否已在购物车中
+        const existingItemIndex = cart.findIndex(item => item.id === product.id);
+        
+        if (existingItemIndex >= 0) {
+            // 更新已有商品数量
+            const newCart = [...cart];
+            newCart[existingItemIndex] = {
+                ...newCart[existingItemIndex],
+                quantity: newCart[existingItemIndex].quantity + 1
+            };
+            setCart(newCart);
+        } else {
+            // 添加新商品到购物车
+            setCart([...cart, {
+                ...product,
+                quantity: 1
+            }]);
+        }
     };
 
     const handleRemoveFromCart = (e) => {
         e.stopPropagation();
-        if (quantity > 0) {
-            setQuantity(prev => prev - 1);
+        
+        // 找到商品在购物车中的索引
+        const existingItemIndex = cart.findIndex(item => item.id === product.id);
+        
+        if (existingItemIndex >= 0 && cart[existingItemIndex].quantity > 1) {
+            // 减少商品数量
+            const newCart = [...cart];
+            newCart[existingItemIndex] = {
+                ...newCart[existingItemIndex],
+                quantity: newCart[existingItemIndex].quantity - 1
+            };
+            setCart(newCart);
+        } else if (existingItemIndex >= 0) {
+            // 移除商品
+            setCart(cart.filter(item => item.id !== product.id));
         }
     };
 
@@ -35,6 +72,7 @@ const ProductCard = ({ product }) => {
                 position: 'relative'
             }}
             className="product-card"
+            onClick={() => onViewDetails(product)}
         >
             {/* 标签 */}
             <Flex gap="2" style={{ position: 'absolute', top: '8px', right: '8px', zIndex: 1 }}>
@@ -79,7 +117,9 @@ const ProductCard = ({ product }) => {
                             <Text size="4" weight="bold">¥{product.price}</Text>
                             <Text size="1" color="gray">/{product.unit}</Text>
                         </Flex>
-                        <Badge size="1" variant="outline">库存 {product.stock}</Badge>
+                        <Badge size="1" variant="outline" color={product.stock > 0 ? "gray" : "red"}>
+                            {product.stock > 0 ? `库存 ${product.stock}` : "缺货"}
+                        </Badge>
                     </Flex>
 
                     {/* 购物车控制 */}
@@ -112,6 +152,7 @@ const ProductCard = ({ product }) => {
                                 size="1"
                                 variant="ghost"
                                 color="green"
+                                disabled={product.stock <= 0}
                                 onClick={handleAddToCart}
                             >
                                 <PlusIcon />

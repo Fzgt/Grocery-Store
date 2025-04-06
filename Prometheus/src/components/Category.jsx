@@ -2,61 +2,70 @@
 import { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { productsAtom, categoryAtom } from '../store/atoms';
-import { Box, Flex, Button, Text, Heading, Card, Badge } from '@radix-ui/themes';
-import { MagnifyingGlassIcon, ChevronRightIcon } from '@radix-ui/react-icons';
+import { ChevronRightIcon } from '@radix-ui/react-icons';
 
-// 模拟分类数据
+// Mock category data
 const categories = [
-    { id: 'fruits', name: '新鲜水果', icon: '🍎', color: 'green' },
-    { id: 'vegetables', name: '时令蔬菜', icon: '🥦', color: 'lime' },
-    { id: 'dairy', name: '奶制品', icon: '🧀', color: 'amber' },
-    { id: 'bakery', name: '烘焙面包', icon: '🍞', color: 'orange' },
-    { id: 'meat', name: '肉类', icon: '🥩', color: 'red' },
-    { id: 'drinks', name: '饮料', icon: '🥤', color: 'blue' },
+    { id: 'fruits', name: 'Fresh Fruits', icon: '🍎', color: 'green' },
+    { id: 'vegetables', name: 'Seasonal Vegetables', icon: '🥦', color: 'lime' },
+    { id: 'dairy', name: 'Dairy Products', icon: '🧀', color: 'amber' },
+    { id: 'bakery', name: 'Bakery Items', icon: '🍞', color: 'orange' },
+    { id: 'meat', name: 'Meat', icon: '🥩', color: 'red' },
+    { id: 'drinks', name: 'Beverages', icon: '🥤', color: 'blue' },
 ];
 
-// 模拟API请求函数
+// Color mapping
+const colorMap = {
+    'green': { bg: '#10b981', light: '#ecfdf5' },
+    'lime': { bg: '#84cc16', light: '#f7fee7' },
+    'amber': { bg: '#f59e0b', light: '#fffbeb' },
+    'orange': { bg: '#f97316', light: '#fff7ed' },
+    'red': { bg: '#ef4444', light: '#fef2f2' },
+    'blue': { bg: '#3b82f6', light: '#eff6ff' }
+};
+
+// Mock API request function
 const fetchProductsByCategory = async (categoryId) => {
-    // 模拟网络延迟
+    // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 300));
 
-    // 根据分类返回不同的产品
+    // Return different products based on category
     const productsByCategory = {
         fruits: [
-            { id: 1, name: '新西兰苹果', price: 12.9, unit: '500g', image: '🍎', discount: '8.5折', stock: 35 },
-            { id: 2, name: '泰国香蕉', price: 6.5, unit: '称重', image: '🍌', hot: true, stock: 42 },
-            { id: 3, name: '红心火龙果', price: 15.8, unit: '个', image: '🐉', discount: '满2减5', stock: 18 },
-            { id: 4, name: '蓝莓', price: 28.9, unit: '盒', image: '🫐', organic: true, stock: 15 }
+            { id: 1, name: 'New Zealand Apple', price: 12.9, unit: '500g', image: '🍎', discount: '15% off', stock: 35 },
+            { id: 2, name: 'Thai Banana', price: 6.5, unit: 'bunch', image: '🍌', hot: true, stock: 42 },
+            { id: 3, name: 'Dragon Fruit', price: 15.8, unit: 'piece', image: '🐉', discount: 'Buy 2 save $5', stock: 18 },
+            { id: 4, name: 'Blueberries', price: 28.9, unit: 'box', image: '🫐', organic: true, stock: 15 }
         ],
         vegetables: [
-            { id: 5, name: '有机西兰花', price: 8.8, unit: '250g', image: '🥦', organic: true, stock: 28 },
-            { id: 6, name: '胡萝卜', price: 3.5, unit: '500g', image: '🥕', discount: '第2件半价', stock: 56 },
-            { id: 7, name: '小番茄', price: 9.9, unit: '盒', image: '🍅', hot: true, stock: 32 },
-            { id: 8, name: '黄瓜', price: 4.8, unit: '根', image: '🥒', stock: 47 }
+            { id: 5, name: 'Organic Broccoli', price: 8.8, unit: '250g', image: '🥦', organic: true, stock: 28 },
+            { id: 6, name: 'Carrots', price: 3.5, unit: '500g', image: '🥕', discount: '2nd at half price', stock: 56 },
+            { id: 7, name: 'Cherry Tomatoes', price: 9.9, unit: 'box', image: '🍅', hot: true, stock: 32 },
+            { id: 8, name: 'Cucumber', price: 4.8, unit: 'piece', image: '🥒', stock: 47 }
         ],
         dairy: [
-            { id: 9, name: '原味酸奶', price: 13.8, unit: '500ml', image: '🥛', hot: true, stock: 22 },
-            { id: 10, name: '切达奶酪', price: 25.9, unit: '200g', image: '🧀', imported: true, stock: 15 },
-            { id: 11, name: '有机纯牛奶', price: 19.8, unit: '1L', image: '🥛', organic: true, stock: 38 },
-            { id: 12, name: '黄油', price: 18.5, unit: '100g', image: '🧈', imported: true, stock: 12 }
+            { id: 9, name: 'Plain Yogurt', price: 13.8, unit: '500ml', image: '🥛', hot: true, stock: 22 },
+            { id: 10, name: 'Cheddar Cheese', price: 25.9, unit: '200g', image: '🧀', imported: true, stock: 15 },
+            { id: 11, name: 'Organic Milk', price: 19.8, unit: '1L', image: '🥛', organic: true, stock: 38 },
+            { id: 12, name: 'Butter', price: 18.5, unit: '100g', image: '🧈', imported: true, stock: 12 }
         ],
         bakery: [
-            { id: 13, name: '全麦面包', price: 12.8, unit: '个', image: '🍞', fresh: true, stock: 18 },
-            { id: 14, name: '法式羊角面包', price: 8.9, unit: '个', image: '🥐', fresh: true, stock: 25 },
-            { id: 15, name: '巧克力甜甜圈', price: 6.5, unit: '个', image: '🍩', discount: '买3送1', stock: 30 },
-            { id: 16, name: '芝士蛋糕', price: 32.8, unit: '6寸', image: '🍰', hot: true, stock: 8 }
+            { id: 13, name: 'Whole Wheat Bread', price: 12.8, unit: 'loaf', image: '🍞', fresh: true, stock: 18 },
+            { id: 14, name: 'Croissant', price: 8.9, unit: 'piece', image: '🥐', fresh: true, stock: 25 },
+            { id: 15, name: 'Chocolate Donut', price: 6.5, unit: 'piece', image: '🍩', discount: 'Buy 3 get 1 free', stock: 30 },
+            { id: 16, name: 'Cheesecake', price: 32.8, unit: '6-inch', image: '🍰', hot: true, stock: 8 }
         ],
         meat: [
-            { id: 17, name: '精选牛排', price: 58.8, unit: '300g', image: '🥩', premium: true, stock: 10 },
-            { id: 18, name: '新鲜鸡胸肉', price: 13.9, unit: '500g', image: '🍗', stock: 45 },
-            { id: 19, name: '有机猪肉', price: 29.9, unit: '500g', image: '🐖', organic: true, stock: 16 },
-            { id: 20, name: '三文鱼片', price: 48.8, unit: '300g', image: '🐟', imported: true, stock: 12 }
+            { id: 17, name: 'Premium Beef Steak', price: 58.8, unit: '300g', image: '🥩', premium: true, stock: 10 },
+            { id: 18, name: 'Chicken Breast', price: 13.9, unit: '500g', image: '🍗', stock: 45 },
+            { id: 19, name: 'Organic Pork', price: 29.9, unit: '500g', image: '🐖', organic: true, stock: 16 },
+            { id: 20, name: 'Salmon Fillet', price: 48.8, unit: '300g', image: '🐟', imported: true, stock: 12 }
         ],
         drinks: [
-            { id: 21, name: '矿泉水', price: 2.5, unit: '550ml', image: '💧', stock: 120 },
-            { id: 22, name: '橙汁', price: 9.9, unit: '1L', image: '🍊', stock: 35 },
-            { id: 23, name: '冰咖啡', price: 13.8, unit: '500ml', image: '☕', hot: true, stock: 28 },
-            { id: 24, name: '气泡水', price: 6.5, unit: '330ml', image: '🫧', imported: true, stock: 42 }
+            { id: 21, name: 'Mineral Water', price: 2.5, unit: '550ml', image: '💧', stock: 120 },
+            { id: 22, name: 'Orange Juice', price: 9.9, unit: '1L', image: '🍊', stock: 35 },
+            { id: 23, name: 'Iced Coffee', price: 13.8, unit: '500ml', image: '☕', hot: true, stock: 28 },
+            { id: 24, name: 'Sparkling Water', price: 6.5, unit: '330ml', image: '🫧', imported: true, stock: 42 }
         ]
     };
 
@@ -74,51 +83,99 @@ const Category = () => {
     };
 
     useEffect(() => {
-        // 初始化时加载第一个分类的产品
+        // Load products from the first category on initialization
         handleCategoryClick(categories[0].id);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
-        <Card size="2" style={{ height: '100%', overflow: 'hidden' }}>
-            <Flex direction="column" gap="4" p="4">
-                <Heading size="4" as="h2">商品分类</Heading>
+        <div style={{ 
+            backgroundColor: '#1a1a1a', 
+            borderRadius: '8px', 
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.3)', 
+            height: '100%', 
+            overflow: 'hidden',
+            color: '#e0e0e0'
+        }}>
+            <div style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: '16px',
+                padding: '16px' 
+            }}>
+                <h2 style={{ 
+                    fontSize: '18px', 
+                    fontWeight: 'bold', 
+                    margin: 0,
+                    color: '#ffffff'
+                }}>
+                    Categories
+                </h2>
 
-                <Flex direction="column" gap="2">
-                    {categories.map((category) => (
-                        <Button
-                            key={category.id}
-                            variant={activeCategory === category.id ? "solid" : "outline"}
-                            color={category.color}
-                            style={{
-                                justifyContent: 'flex-start',
-                                padding: '12px 16px',
-                                transition: 'all 0.2s ease'
-                            }}
-                            onClick={() => handleCategoryClick(category.id)}
-                        >
-                            <Flex align="center" gap="3" style={{ width: '100%' }}>
-                                <Text size="4">{category.icon}</Text>
-                                <Text size="2" style={{ flex: 1 }}>{category.name}</Text>
-                                <ChevronRightIcon style={{
-                                    opacity: activeCategory === category.id ? 1 : 0.5,
-                                    transform: activeCategory === category.id ? 'translateX(2px)' : 'none',
-                                    transition: 'all 0.2s ease'
-                                }} />
-                            </Flex>
-                        </Button>
-                    ))}
-                </Flex>
+                <div style={{ 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    gap: '8px' 
+                }}>
+                    {categories.map((category) => {
+                        const isActive = activeCategory === category.id;
+                        const color = colorMap[category.color];
+                        
+                        return (
+                            <button
+                                key={category.id}
+                                style={{
+                                    backgroundColor: isActive ? color.bg : '#2a2a2a',
+                                    color: isActive ? 'white' : '#e0e0e0',
+                                    border: isActive ? 'none' : `1px solid #444444`,
+                                    borderRadius: '6px',
+                                    padding: '12px 16px',
+                                    cursor: 'pointer',
+                                    textAlign: 'left',
+                                    transition: 'all 0.2s ease',
+                                    display: 'block',
+                                    width: '100%'
+                                }}
+                                onClick={() => handleCategoryClick(category.id)}
+                            >
+                                <div style={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: '12px',
+                                    width: '100%'
+                                }}>
+                                    <span style={{ fontSize: '20px' }}>{category.icon}</span>
+                                    <span style={{ 
+                                        flex: 1, 
+                                        fontSize: '14px'
+                                    }}>
+                                        {category.name}
+                                    </span>
+                                    <ChevronRightIcon style={{
+                                        opacity: isActive ? 1 : 0.5,
+                                        transform: isActive ? 'translateX(2px)' : 'none',
+                                        transition: 'all 0.2s ease',
+                                        color: isActive ? 'white' : '#a0a0a0'
+                                    }} />
+                                </div>
+                            </button>
+                        );
+                    })}
+                </div>
 
-                <Box mt="auto">
-                    <Badge size="1" variant="outline" color="gray" radius="full" style={{ width: '100%' }}>
-                        <Text align='center' as='div' style={{ width: '100%' }}>
-                            {categories.length} categories
-                        </Text>
-                    </Badge>
-                </Box>
-            </Flex>
-        </Card>
+                <div style={{ 
+                    marginTop: 'auto',
+                    padding: '6px',
+                    border: '1px solid #444444',
+                    borderRadius: '999px',
+                    textAlign: 'center',
+                    fontSize: '12px',
+                    color: '#a0a0a0'
+                }}>
+                    {categories.length} categories
+                </div>
+            </div>
+        </div>
     );
 };
 

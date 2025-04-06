@@ -1,26 +1,45 @@
 import './App.css'
-import { Navbar, Category, Products, Footer } from './components/export.js';
-import { Box, Grid } from '@radix-ui/themes';
+import { Navbar, Category, Products, Footer, Cart, Messages, Login } from './components/export.js';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
+// 主页组件
+const HomePage = () => (
+  <div style={{ padding: '16px', backgroundColor: '#121212' }}>
+    <div className="home-grid">
+      <div className="category-container">
+        <Category />
+      </div>
+      <div className="products-container">
+        <Products />
+      </div>
+    </div>
+  </div>
+)
 
 const App = () => {
   return (
-    <Box style={{ minHeight: '100vh' }}>
-      <Navbar />
-
-      <Box p="4">
-        <Grid columns={{ initial: '1', md: '4' }} gap="4">
-          <Box style={{ gridColumn: 'span 1' }}>
-            <Category />
-          </Box>
-          <Box style={{ gridColumn: 'span 3' }}>
-            <Products />
-          </Box>
-        </Grid>
-      </Box>
-
-      <Footer />
-    </Box>
+    <BrowserRouter>
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        minHeight: '100vh', 
+        backgroundColor: '#121212'
+      }}>
+        <Navbar />
+        
+        <div style={{ flex: '1 0 auto' }}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/messages/:id" element={<Messages />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/cart" element={<Cart />} />
+          </Routes>
+        </div>
+        
+        <Footer />
+      </div>
+    </BrowserRouter>
   )
 }
 

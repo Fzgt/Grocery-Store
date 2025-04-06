@@ -7,5 +7,38 @@ export const productsAtom = atom([]);
 // 存储当前选中分类的atom
 export const categoryAtom = atom('fruits');
 
-// 如果需要，可以添加购物车atom
+// 购物车atom
 export const cartAtom = atom([]);
+
+// 用户状态atom
+export const userAtom = atom(null);
+
+// 通知消息atom
+export const notificationsAtom = atom([]);
+
+// 订单历史atom
+export const ordersAtom = atom([]);
+
+// 搜索关键词atom
+export const searchTermAtom = atom('');
+
+// 未读通知数量
+export const unreadNotificationsCountAtom = atom(
+  (get) => get(notificationsAtom).filter(notification => !notification.read).length
+);
+
+// 计算购物车中商品总数量
+export const cartItemCountAtom = atom(
+  (get) => {
+    const cart = get(cartAtom);
+    return cart.reduce((total, item) => total + item.quantity, 0);
+  }
+);
+
+// 计算购物车总价
+export const cartTotalAtom = atom(
+  (get) => {
+    const cart = get(cartAtom);
+    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  }
+);
