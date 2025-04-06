@@ -1,5 +1,5 @@
 import './App.css'
-import { Navbar, Category, Products, Footer, Cart, Messages, Login } from './components/export.js';
+import { Navbar, Category, Products, Footer, Cart, Messages } from './components/export.js';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // 主页组件
@@ -32,7 +32,6 @@ const App = () => {
             <Route path="/" element={<HomePage />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/messages/:id" element={<Messages />} />
-            <Route path="/login" element={<Login />} />
             <Route path="/cart" element={<Cart />} />
           </Routes>
         </div>

@@ -5,7 +5,6 @@ import Navbar from './Navbar.jsx';
 import ProductDetail from './ProductDetail.jsx';
 import Cart from './Cart.jsx';
 import Messages from './Messages.jsx';
-import Login from './Login.jsx';
 
 export {
     Category,
@@ -15,5 +14,4 @@ export {
     ProductDetail,
     Cart,
     Messages,
-    Login,
 }

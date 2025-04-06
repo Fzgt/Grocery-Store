@@ -174,28 +174,26 @@ const Navbar = () => {
                                 </DropdownMenu.Content>
                             </DropdownMenu.Root>
                             
-                            <Link href="/login">
-                                <Box style={{ position: 'relative' }}>
-                                    <IconButton size="2" variant="ghost">
-                                        <PersonIcon />
-                                    </IconButton>
-                                    {user && (
-                                        <Badge
-                                            color="green"
-                                            variant="solid"
-                                            radius="full"
-                                            style={{
-                                                position: 'absolute',
-                                                top: '-4px',
-                                                right: '-4px',
-                                                width: '10px',
-                                                height: '10px',
-                                                padding: 0
-                                            }}
-                                        />
-                                    )}
-                                </Box>
-                            </Link>
+                            <Box style={{ position: 'relative' }}>
+                                <IconButton size="2" variant="ghost">
+                                    <PersonIcon />
+                                </IconButton>
+                                {user && (
+                                    <Badge
+                                        color="green"
+                                        variant="solid"
+                                        radius="full"
+                                        style={{
+                                            position: 'absolute',
+                                            top: '-4px',
+                                            right: '-4px',
+                                            width: '10px',
+                                            height: '10px',
+                                            padding: 0
+                                        }}
+                                    />
+                                )}
+                            </Box>
                             
                             <Link href="/cart">
                                 <Box style={{ position: 'relative' }}>
