@@ -1,0 +1,9 @@
+node_modules
+dist
+build
+.git
+.github
+.vscode
+package-lock.json
+yarn.lock
+*.min.js 

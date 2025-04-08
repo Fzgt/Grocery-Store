@@ -22,6 +22,9 @@ export const ordersAtom = atom([]);
 // 搜索关键词atom
 export const searchTermAtom = atom('');
 
+// Store all products across all categories for global search
+export const allProductsAtom = atom([]);
+
 // 未读通知数量
 export const unreadNotificationsCountAtom = atom(
   (get) => get(notificationsAtom).filter(notification => !notification.read).length
@@ -40,5 +43,21 @@ export const cartTotalAtom = atom(
   (get) => {
     const cart = get(cartAtom);
     return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  }
+);
+
+// Search results atom derived from search term and all products
+export const searchResultsAtom = atom(
+  (get) => {
+    const searchTerm = get(searchTermAtom);
+    const allProducts = get(allProductsAtom);
+    
+    if (!searchTerm.trim()) {
+      return [];
+    }
+    
+    return allProducts.filter(product => 
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   }
 );

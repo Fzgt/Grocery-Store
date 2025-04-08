@@ -118,19 +118,3 @@ html, body, #root {
     transform: translateX(calc(100% + 20px));
   }
 }
-
-/* Toast viewport styles */
-[data-radix-toast-viewport] {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  display: flex;
-  flex-direction: column;
-  padding: 25px;
-  gap: 10px;
-  max-width: 100vw;
-  margin: 0;
-  list-style: none;
-  z-index: 9999;
-  outline: none;
-}

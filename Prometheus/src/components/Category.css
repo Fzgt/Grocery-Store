@@ -1,0 +1,126 @@
+.category-container {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  height: 100%;
+  overflow: hidden;
+  color: #e0e0e0;
+}
+
+.category-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.category-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  color: #ffffff;
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.category-button {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  border: 1px solid #444444;
+  border-radius: 6px;
+  padding: 12px 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  display: block;
+  width: 100%;
+}
+
+.category-button:hover {
+  background-color: #363636;
+}
+
+.category-button.active {
+  border: none;
+  color: white;
+}
+
+.category-button-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.category-icon {
+  font-size: 20px;
+}
+
+.category-name {
+  flex: 1;
+  font-size: 14px;
+}
+
+.category-arrow {
+  opacity: 0.5;
+  color: #a0a0a0;
+}
+
+.category-button.active .category-arrow {
+  opacity: 1;
+  color: white;
+}
+
+.category-counter {
+  margin-top: auto;
+  padding: 6px;
+  border: 1px solid #444444;
+  border-radius: 999px;
+  text-align: center;
+  font-size: 12px;
+  color: #a0a0a0;
+}
+
+/* For subcategories */
+.subcategory-container {
+  margin-left: 20px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.subcategory-container.visible {
+  max-height: 300px;
+}
+
+.subcategory-button {
+  background-color: #222222;
+  color: #d0d0d0;
+  border: 1px solid #444444;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-top: 4px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  display: block;
+  width: 100%;
+}
+
+.subcategory-button:hover {
+  background-color: #2d2d2d;
+}
+
+.subcategory-button.active {
+  background-color: #333333;
+  color: white;
+} 
