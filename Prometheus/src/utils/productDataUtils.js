@@ -1,7 +1,7 @@
 import { fetchProducts } from './utils';
 
 /**
- * 将API返回的产品数据转换为分类数据结构
+ * Convert API returned product data to category data structure
  * @returns {Promise<{categoriesData: Array, productsData: Object}>}
  */
 export const getFormattedProductData = async () => {
@@ -13,31 +13,31 @@ export const getFormattedProductData = async () => {
       return { categoriesData: [], productsData: {} };
     }
     
-    // 存储所有分类和子分类的集合
+    // Store all categories and subcategories collections
     const categories = new Map();
     const subCategories = new Map();
     
-    // 用于存储格式化后的产品数据
+    // For storing formatted product data
     const productsData = {};
     
-    // 处理产品数据
+    // Process product data
     products.forEach(product => {
       const { category, subcategory } = product;
       
-      // 添加产品到主分类
+      // Add product to main category
       if (!productsData[category]) {
         productsData[category] = [];
       }
       productsData[category].push(product);
       
-      // 添加产品到子分类
+      // Add product to subcategory
       if (subcategory) {
         if (!productsData[subcategory]) {
           productsData[subcategory] = [];
         }
         productsData[subcategory].push(product);
         
-        // 记录该子分类属于哪个主分类
+        // Record which main category this subcategory belongs to
         const mainCategory = subcategory.split('-')[0];
         if (!subCategories.has(subcategory)) {
           subCategories.set(subcategory, {
@@ -48,20 +48,20 @@ export const getFormattedProductData = async () => {
         }
       }
       
-      // 记录主分类
+      // Record main category
       if (!categories.has(category)) {
         categories.set(category, {
           id: category,
           name: formatCategoryName(category),
           subcategories: [],
-          // 为每个类别分配一个图标和颜色
+          // Assign an icon and color for each category
           icon: getCategoryIcon(category),
           color: getCategoryColor(category)
         });
       }
     });
     
-    // 将子分类添加到对应的主分类中
+    // Add subcategories to corresponding main categories
     subCategories.forEach(subCategory => {
       const mainCategory = categories.get(subCategory.mainCategory);
       if (mainCategory) {
@@ -69,7 +69,7 @@ export const getFormattedProductData = async () => {
       }
     });
     
-    // 转换为数组格式
+    // Convert to array format
     const categoriesData = Array.from(categories.values());
     
     return { categoriesData, productsData };
@@ -80,16 +80,16 @@ export const getFormattedProductData = async () => {
 };
 
 /**
- * 格式化分类名称为更友好的显示格式
+ * Format category name to a more user-friendly display format
  */
 const formatCategoryName = (name) => {
   if (!name) return '';
-  // 将 fruit 转换为 Fruit, fruits 转换为 Fruits, fruits-local 转换为 Local Fruits
+  // Convert fruit to Fruit, fruits to Fruits, fruits-local to Local Fruits
   return name.charAt(0).toUpperCase() + name.slice(1).replace(/-/g, ' ');
 };
 
 /**
- * 根据分类名获取对应的图标
+ * Get corresponding icon based on category name
  */
 const getCategoryIcon = (category) => {
   const iconMap = {
@@ -105,7 +105,7 @@ const getCategoryIcon = (category) => {
 };
 
 /**
- * 根据分类名获取对应的颜色
+ * Get corresponding color based on category name
  */
 const getCategoryColor = (category) => {
   const colorMap = {
@@ -121,7 +121,7 @@ const getCategoryColor = (category) => {
 };
 
 /**
- * 导出颜色映射，供组件使用
+ * Export color mapping for component use
  */
 export const colorMap = {
   'green': '#10b981',

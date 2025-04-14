@@ -17,7 +17,7 @@ const Category = () => {
     const [productsData, setProductsData] = useState({});
     const [loading, setLoading] = useState(true);
 
-    // 加载产品数据
+    // Load product data
     useEffect(() => {
         const loadProductData = async () => {
             setLoading(true);
@@ -26,7 +26,7 @@ const Category = () => {
                 setCategoriesData(categoriesData);
                 setProductsData(productsData);
                 
-                // 将所有产品合并到一个数组中，用于全局搜索
+                // Merge all products into a single array for global search
                 const allProducts = Object.values(productsData)
                     .flat()
                     .filter((product, index, self) => 
@@ -34,7 +34,7 @@ const Category = () => {
                     );
                 setAllProducts(allProducts);
                 
-                // 初始化第一个分类的产品
+                // Initialize products from the first category
                 if (categoriesData.length > 0) {
                     const firstCategory = categoriesData[0].id;
                     setActiveCategory(firstCategory);

@@ -25,12 +25,12 @@ export const searchTermAtom = atom('');
 // Store all products across all categories for global search
 export const allProductsAtom = atom([]);
 
-// 未读通知数量
+// Unread notifications count
 export const unreadNotificationsCountAtom = atom(
   (get) => get(notificationsAtom).filter(notification => !notification.read).length
 );
 
-// 计算购物车中商品总数量
+// Calculate total quantity of items in cart
 export const cartItemCountAtom = atom(
   (get) => {
     const cart = get(cartAtom);
@@ -38,7 +38,7 @@ export const cartItemCountAtom = atom(
   }
 );
 
-// 计算购物车总价
+// Calculate cart total price
 export const cartTotalAtom = atom(
   (get) => {
     const cart = get(cartAtom);
