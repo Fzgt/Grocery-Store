@@ -1,0 +1,135 @@
+.order-success-container {
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #121212;
+}
+
+.order-success-card {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  padding: 40px;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  color: #e0e0e0;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.success-icon {
+  width: 100px;
+  height: 100px;
+  background-color: #4caf50;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 30px;
+  color: white;
+  font-size: 50px;
+  font-weight: bold;
+  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+}
+
+.order-success-card h1 {
+  margin-bottom: 20px;
+  color: #ffffff;
+  font-size: 28px;
+}
+
+.order-success-card p {
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.order-number {
+  font-family: monospace;
+  font-size: 20px;
+  color: #ffcc00;
+  background-color: rgba(255, 204, 0, 0.1);
+  padding: 10px;
+  border-radius: 4px;
+  display: inline-block;
+  margin: 15px 0 20px;
+  letter-spacing: 1px;
+}
+
+.delivery-info {
+  background-color: #242424;
+  border-radius: 6px;
+  padding: 20px;
+  margin: 20px 0 30px;
+  text-align: left;
+}
+
+.delivery-info p {
+  margin-bottom: 10px;
+}
+
+.delivery-info strong {
+  color: #4caf50;
+}
+
+.success-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+.continue-shopping-btn, .view-details-btn {
+  padding: 14px 25px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.continue-shopping-btn {
+  background-color: transparent;
+  border: 1px solid #3b82f6;
+  color: #3b82f6;
+}
+
+.view-details-btn {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.continue-shopping-btn:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.view-details-btn:hover {
+  background-color: #2563eb;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .order-success-card {
+    padding: 30px 20px;
+  }
+  
+  .success-actions {
+    flex-direction: column;
+  }
+  
+  .continue-shopping-btn, .view-details-btn {
+    width: 100%;
+  }
+} 

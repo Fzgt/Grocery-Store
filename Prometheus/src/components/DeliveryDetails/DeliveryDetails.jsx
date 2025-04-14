@@ -22,21 +22,12 @@ const DeliveryDetails = () => {
         state: 'NSW',
     });
 
-    // Error state
     const [errors, setErrors] = useState({});
-    
-    // 订单处理状态
+
     const [loading, setLoading] = useState(false);
 
-    // Check stock before order is placed
     const [stockIssues, setStockIssues] = useState([]);
 
-    // Redirect to cart if empty
-    useEffect(() => {
-        if (cart.length === 0) {
-            navigate('/cart');
-        }
-    }, [cart, navigate]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -93,21 +84,19 @@ const DeliveryDetails = () => {
     const checkInventory = async () => {
         try {
             setLoading(true);
-            
-            // 调用后端API检查库存并下单
+
             const response = await placeOrder(cart);
-            
+
             if (!response.success) {
-                // 库存不足或其他错误
                 if (response.insufficientItems && response.insufficientItems.length > 0) {
-                    // 将库存不足信息转换为stockIssues格式
+                    // transform the insufficient items into a more user-friendly format
                     return response.insufficientItems.map(item => ({
                         productId: item.id,
                         name: item.name,
                         reason: `Requested: ${item.requestedQuantity}, Available: ${item.availableQuantity}`
                     }));
                 } else {
-                    // 其他API错误
+                    // API error or other issues
                     return [{
                         productId: 'error',
                         name: 'Order Error',
@@ -115,12 +104,10 @@ const DeliveryDetails = () => {
                     }];
                 }
             }
-            
-            // 订单成功，返回空数组表示没有库存问题
-            return [];
+
+            return []; // errorIssues is empty
         } catch (error) {
             console.error('Error checking inventory:', error);
-            // 网络错误
             return [{
                 productId: 'network-error',
                 name: 'Connection Error',
@@ -138,7 +125,6 @@ const DeliveryDetails = () => {
             return;
         }
 
-        // 执行库存检查和下单
         const inventoryIssues = await checkInventory();
 
         if (inventoryIssues.length > 0) {
@@ -146,36 +132,45 @@ const DeliveryDetails = () => {
             return;
         }
 
-        // 订单已成功处理 - 清空购物车
-        setCart([]);
-        clearCartFromStorage();
-        
-        // 添加订单成功通知
+        // 生成订单ID
+        const orderId = new Date().getTime().toString().slice(-8);
+
+        // 生成订单数据
+        const orderData = {
+            items: cart.map(item => ({
+                id: item.id,
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price,
+                total: item.price * item.quantity
+            })),
+            totalAmount: cart.reduce((total, item) => total + (item.price * item.quantity), 0),
+            orderDate: new Date().toISOString(),
+            shippingAddress: `${formData.street}, ${formData.city}, ${formData.state}`,
+            recipient: formData.name,
+            orderId: orderId
+        };
+
+        // 添加通知
         setNotifications(prev => [
-            { 
-                id: Date.now(), 
-                message: 'Order placed successfully!', 
+            {
+                id: Date.now(),
+                message: 'Order placed successfully!',
                 type: 'success',
                 read: false,
-                orderDetails: {
-                    items: cart.map(item => ({
-                        id: item.id,
-                        name: item.name,
-                        quantity: item.quantity,
-                        price: item.price,
-                        total: item.price * item.quantity
-                    })),
-                    totalAmount: cart.reduce((total, item) => total + (item.price * item.quantity), 0),
-                    orderDate: new Date().toISOString(),
-                    shippingAddress: `${formData.street}, ${formData.city}, ${formData.state}`,
-                    recipient: formData.name
-                }
-            }, 
+                orderDetails: orderData
+            },
             ...prev
         ]);
 
-        // 前往订单确认页
-        navigate('/confirmation', { state: { formData } });
+        // 清空购物车
+        setCart([]);
+        clearCartFromStorage();
+
+        // 导航到成功页面
+        navigate('/order-success', {
+            state: { orderId }
+        });
     };
 
     return (

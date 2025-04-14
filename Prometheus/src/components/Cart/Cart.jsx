@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { cartAtom, notificationsAtom } from '../../store/atoms';
+import { cartAtom } from '../../store/atoms';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -12,13 +12,10 @@ import './Cart.css';
 
 const Cart = () => {
     const [cart, setCart] = useAtom(cartAtom);
-    const [notifications, setNotifications] = useAtom(notificationsAtom);
     const navigate = useNavigate();
-    const location = useLocation();
 
 
     const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-    const totalQuantity = cart.reduce((total, item) => total + item.quantity, 0);
 
     const increaseQuantity = (itemId) => {
         const newCart = cart.map(item =>
@@ -67,7 +64,7 @@ const Cart = () => {
     return (
         <div className="cart-page">
             <h1 className="cart-title">Shopping Cart</h1>
-            
+
             {cart.length === 0 ? (
                 <div className="empty-cart">
                     <ShoppingCartIcon style={{ fontSize: 60, opacity: 0.7 }} />

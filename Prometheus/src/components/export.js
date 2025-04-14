@@ -7,6 +7,7 @@ import ProductCard from './ProductCard';
 import Messages from './Messages/Messages';
 import DeliveryDetails from './DeliveryDetails/DeliveryDetails';
 import OrderConfirmation from './OrderConfirmation/OrderConfirmation';
+import OrderSuccess from './OrderSuccess/OrderSuccess';
 
 export {
     Navbar,
@@ -17,5 +18,6 @@ export {
     ProductCard,
     Messages,
     DeliveryDetails,
-    OrderConfirmation
+    OrderConfirmation,
+    OrderSuccess
 };
