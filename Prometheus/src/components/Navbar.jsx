@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useDeferredValue } from 'react';
 import { useAtom } from 'jotai';
 import {
     searchTermAtom,
@@ -14,7 +14,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ChatIcon from '@mui/icons-material/Chat';
-import { fetchProducts, useDebounce } from '../utils/utils';
+import { fetchProducts } from '../utils/utils';
 
 
 const Navbar = () => {
@@ -29,7 +29,7 @@ const Navbar = () => {
     const [showDropdown, setShowDropdown] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
     const [allProducts, setAllProducts] = useState([]);
-    const debouncedSearchTerm = useDebounce(searchTerm, 500); // set serach latency
+    const deferredValue = useDeferredValue(searchTerm);
     const location = useLocation();
     const navigate = useNavigate();
     const searchRef = useRef(null);
@@ -40,7 +40,7 @@ const Navbar = () => {
     useEffect(() => {
         const getProducts = async () => {
             try {
-                console.log("Fetching products for search:", debouncedSearchTerm);
+                console.log("Fetching products for search:", deferredValue);
                 const products = await fetchProducts();
                 setAllProducts(products);
             } catch (error) {
@@ -49,7 +49,7 @@ const Navbar = () => {
         };
 
         getProducts();
-    }, [debouncedSearchTerm]);
+    }, [deferredValue]);
 
     useEffect(() => {
         if (searchTerm.trim() !== '') {

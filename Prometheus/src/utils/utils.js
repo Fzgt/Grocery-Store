@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+// import { useState, useEffect } from 'react';
 
 export const fetchProducts = async () => {
     try {
@@ -10,7 +10,6 @@ export const fetchProducts = async () => {
 
         const data = await response.json();
 
-        // console.log(data);
         return data;
     } catch (error) {
         console.error('get products data failed', error);
@@ -18,18 +17,18 @@ export const fetchProducts = async () => {
     }
 };
 
-export const useDebounce = (value, delay) => {
-    const [debouncedValue, setDebouncedValue] = useState(value);
+// export const useDebounce = (value, delay) => {
+//     const [debouncedValue, setDebouncedValue] = useState(value);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setDebouncedValue(value);
-        }, delay);
+//     useEffect(() => {
+//         const timer = setTimeout(() => {
+//             setDebouncedValue(value);
+//         }, delay);
 
-        return () => {
-            clearTimeout(timer);
-        };
-    }, [value, delay]);
+//         return () => {
+//             clearTimeout(timer);
+//         };
+//     }, [value, delay]);
 
-    return debouncedValue;
-};
+//     return debouncedValue;
+// };
