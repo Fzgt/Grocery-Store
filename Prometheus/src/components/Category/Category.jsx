@@ -17,7 +17,6 @@ const Category = () => {
     const [productsData, setProductsData] = useState({});
     const [loading, setLoading] = useState(true);
 
-    // Load product data
     useEffect(() => {
         const loadProductData = async () => {
             setLoading(true);
@@ -25,15 +24,15 @@ const Category = () => {
                 const { categoriesData, productsData } = await getFormattedProductData();
                 setCategoriesData(categoriesData);
                 setProductsData(productsData);
-                
+
                 // Merge all products into a single array for global search
                 const allProducts = Object.values(productsData)
                     .flat()
-                    .filter((product, index, self) => 
+                    .filter((product, index, self) =>
                         index === self.findIndex(p => p.id === product.id)
                     );
                 setAllProducts(allProducts);
-                
+
                 // Initialize products from the first category
                 if (categoriesData.length > 0) {
                     const firstCategory = categoriesData[0].id;
@@ -50,7 +49,6 @@ const Category = () => {
         loadProductData();
     }, [setProducts, setActiveCategory, setAllProducts]);
 
-    // Auto-expand the parent category when a subcategory is active
     useEffect(() => {
         if (activeCategory && activeCategory.includes('-')) {
             const mainCategory = activeCategory.split('-')[0];
@@ -97,19 +95,15 @@ const Category = () => {
         return null;
     };
 
-    // Determine if a subcategory is active
     const isSubcategoryActive = (subcategoryId) => {
         return activeCategory === subcategoryId;
     };
 
-    // Determine if a main category is active (either directly or via a subcategory)
     const isMainCategoryActive = (categoryId) => {
-        // If directly active
         if (activeCategory === categoryId && !activeSubcategory) {
             return true;
         }
 
-        // If one of its subcategories is active
         if (activeCategory && activeCategory.includes('-')) {
             const parentCategory = findParentCategory(activeCategory);
             return parentCategory === categoryId;

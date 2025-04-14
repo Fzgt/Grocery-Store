@@ -12,7 +12,6 @@ const DeliveryDetails = () => {
     const [, setNotifications] = useAtom(notificationsAtom);
     const navigate = useNavigate();
 
-    // Form metadata
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -48,31 +47,26 @@ const DeliveryDetails = () => {
     const validateForm = () => {
         const newErrors = {};
 
-        // Name validation
         if (!formData.name.trim()) {
             newErrors.name = 'Name is required';
         }
 
-        // Email validation
         if (!formData.email.trim()) {
             newErrors.email = 'Email is required';
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
             newErrors.email = 'Email is invalid';
         }
 
-        // Mobile validation
         if (!formData.mobile.trim()) {
             newErrors.mobile = 'Mobile number is required';
         } else if (!/^\d{10}$/.test(formData.mobile.replace(/\s/g, ''))) {
             newErrors.mobile = 'Mobile number must be 10 digits';
         }
 
-        // Street validation
         if (!formData.street.trim()) {
             newErrors.street = 'Street address is required';
         }
 
-        // City validation
         if (!formData.city.trim()) {
             newErrors.city = 'City/Suburb is required';
         }

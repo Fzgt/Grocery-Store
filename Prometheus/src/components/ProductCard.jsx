@@ -9,18 +9,16 @@ import './ProductCard.css';
 const ProductCard = ({ product }) => {
     const [cart, setCart] = useAtom(cartAtom);
 
-    // Find product quantity in cart
     const cartItem = cart.find(item => item.id === product.id);
     const quantity = cartItem ? cartItem.quantity : 0;
-    
-    // Check if product is in stock
+
     const isInStock = product.stock > 0;
 
     const handleAddToCart = (e) => {
         e.stopPropagation();
 
         if (!isInStock) {
-            return; // Don't add out of stock items
+            return; // out of stock case return directly
         }
 
         // Check if item already in cart
@@ -28,39 +26,32 @@ const ProductCard = ({ product }) => {
         let newCart;
 
         if (existingItemIndex >= 0) {
-            // Update existing item quantity
             newCart = [...cart];
             newCart[existingItemIndex] = {
                 ...newCart[existingItemIndex],
                 quantity: newCart[existingItemIndex].quantity + 1
             };
-        } else {
-            // Add new item to cart
+        } else { // If not in cart, add it
             newCart = [...cart, {
                 ...product,
                 quantity: 1
             }];
         }
-        
-        // Update cart state
+
         setCart(newCart);
-        
-        // Update localStorage with new timestamp
+
         saveCartToStorage(newCart);
     };
 
     const handleRemoveFromCart = (e) => {
         e.stopPropagation();
 
-        // Find item index in cart
         const existingItemIndex = cart.findIndex(item => item.id === product.id);
 
         if (existingItemIndex >= 0) {
-            // Remove item completely
             const newCart = cart.filter(item => item.id !== product.id);
             setCart(newCart);
-            
-            // Update localStorage
+
             if (newCart.length > 0) {
                 saveCartToStorage(newCart);
             } else {
@@ -93,7 +84,6 @@ const ProductCard = ({ product }) => {
                 )}
             </div>
 
-            {/* Product image */}
             <div className="product-image">
                 <span>{product.image}</span>
             </div>
@@ -121,15 +111,15 @@ const ProductCard = ({ product }) => {
                     >
                         <AddShoppingCartIcon style={{ fontSize: 16, marginRight: 4 }} />
                         <span>
-                            {isInStock 
-                                ? quantity > 0 
-                                    ? `Add to Cart (${quantity})` 
+                            {isInStock
+                                ? quantity > 0
+                                    ? `Add to Cart (${quantity})`
                                     : 'Add to Cart'
                                 : 'Out of Stock'
                             }
                         </span>
                     </button>
-                    
+
                     {quantity > 0 && (
                         <button
                             className="cart-button remove-from-cart"

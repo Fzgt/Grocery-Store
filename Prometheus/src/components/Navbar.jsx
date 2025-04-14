@@ -102,7 +102,6 @@ const Navbar = () => {
         }
     };
 
-    // Handle click on search result
     const handleResultClick = (product) => {
         selectProduct(product);
     };
@@ -116,7 +115,6 @@ const Navbar = () => {
         const categoryProducts = allProducts.filter(p => p.category === product.category);
         setProducts(categoryProducts);
 
-        // Update active category
         setCategory(product.category);
 
         navigate('/');

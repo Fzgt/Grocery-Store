@@ -3,8 +3,8 @@ const Footer = () => (
         backgroundColor: '#1a1a1a',
         padding: '20px',
         borderTop: '1px solid #333333',
-        marginTop: 'auto', // Helps with flexbox sticky footer
-        flexShrink: 0 // Prevents the footer from shrinking
+        marginTop: 'auto',
+        flexShrink: 0
     }}>
         <div style={{
             maxWidth: '1200px',
