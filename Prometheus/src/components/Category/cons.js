@@ -1,17 +1,8 @@
-// Category.jsx
-import { useState, useEffect } from 'react';
-import { useAtom } from 'jotai';
-import { productsAtom, categoryAtom, searchTermAtom } from '../store/atoms';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import './Category.css';
-
-// Hardcoded categories data
-const categoriesData = [
-    { 
-        id: 'fruits', 
-        name: 'Fresh Fruits', 
-        icon: '🍎', 
+export const categoriesData = [
+    {
+        id: 'fruits',
+        name: 'Fresh Fruits',
+        icon: '🍎',
         color: 'green',
         subcategories: [
             { id: 'fruits-local', name: 'Local Fruits' },
@@ -20,10 +11,10 @@ const categoriesData = [
             { id: 'fruits-citrus', name: 'Citrus Fruits' }
         ]
     },
-    { 
-        id: 'vegetables', 
-        name: 'Seasonal Vegetables', 
-        icon: '🥦', 
+    {
+        id: 'vegetables',
+        name: 'Seasonal Vegetables',
+        icon: '🥦',
         color: 'lime',
         subcategories: [
             { id: 'vegetables-leafy', name: 'Leafy Greens' },
@@ -32,10 +23,10 @@ const categoriesData = [
             { id: 'vegetables-organic', name: 'Organic Vegetables' }
         ]
     },
-    { 
-        id: 'dairy', 
-        name: 'Dairy Products', 
-        icon: '🧀', 
+    {
+        id: 'dairy',
+        name: 'Dairy Products',
+        icon: '🧀',
         color: 'amber',
         subcategories: [
             { id: 'dairy-milk', name: 'Milk & Cream' },
@@ -44,10 +35,10 @@ const categoriesData = [
             { id: 'dairy-butter', name: 'Butter & Spreads' }
         ]
     },
-    { 
-        id: 'bakery', 
-        name: 'Bakery Items', 
-        icon: '🍞', 
+    {
+        id: 'bakery',
+        name: 'Bakery Items',
+        icon: '🍞',
         color: 'orange',
         subcategories: [
             { id: 'bakery-bread', name: 'Bread' },
@@ -56,10 +47,10 @@ const categoriesData = [
             { id: 'bakery-desserts', name: 'Desserts' }
         ]
     },
-    { 
-        id: 'meat', 
-        name: 'Meat & Seafood', 
-        icon: '🥩', 
+    {
+        id: 'meat',
+        name: 'Meat & Seafood',
+        icon: '🥩',
         color: 'red',
         subcategories: [
             { id: 'meat-beef', name: 'Beef' },
@@ -68,10 +59,10 @@ const categoriesData = [
             { id: 'meat-seafood', name: 'Seafood' }
         ]
     },
-    { 
-        id: 'drinks', 
-        name: 'Beverages', 
-        icon: '🧃', 
+    {
+        id: 'drinks',
+        name: 'Beverages',
+        icon: '🧃',
         color: 'blue',
         subcategories: [
             { id: 'drinks-water', name: 'Water' },
@@ -82,8 +73,7 @@ const categoriesData = [
     }
 ];
 
-// Hardcoded products data
-const productsData = {
+export const productsData = {
     // Main categories
     'fruits': [
         { id: 1, name: 'New Zealand Apple', price: 12.9, unit: '500g', image: '🍎', stock: 35 },
@@ -137,7 +127,7 @@ const productsData = {
         { id: 227, name: 'Coffee Beans', price: 15.9, unit: '250g', image: '☕', stock: 15 },
         { id: 228, name: 'Apple Juice', price: 5.9, unit: '1L', image: '🧃', stock: 20 }
     ],
-    
+
     // Subcategories - Fruits
     'fruits-local': [
         { id: 101, name: 'NSW Apple', price: 9.9, unit: '500g', image: '🍎', stock: 45 },
@@ -163,7 +153,7 @@ const productsData = {
         { id: 239, name: 'Blood Orange', price: 7.5, unit: '3 pack', image: '🍊', stock: 15 },
         { id: 240, name: 'Lime', price: 1.9, unit: 'piece', image: '🍋', stock: 30 }
     ],
-    
+
     // Subcategories - Vegetables
     'vegetables-leafy': [
         { id: 105, name: 'Baby Spinach', price: 4.5, unit: 'bag', image: '🥬', stock: 30 },
@@ -189,7 +179,7 @@ const productsData = {
         { id: 251, name: 'Organic Potato', price: 7.9, unit: 'kg', image: '🥔', stock: 22 },
         { id: 252, name: 'Organic Zucchini', price: 5.9, unit: 'piece', image: '🥒', stock: 15 }
     ],
-    
+
     // Subcategories - Dairy
     'dairy-milk': [
         { id: 109, name: 'Full Cream Milk', price: 5.5, unit: '2L', image: '🥛', stock: 48 },
@@ -215,7 +205,7 @@ const productsData = {
         { id: 263, name: 'Margarine', price: 4.9, unit: '500g', image: '🧈', stock: 30 },
         { id: 264, name: 'Olive Oil Spread', price: 5.9, unit: '250g', image: '🧈', stock: 18 }
     ],
-    
+
     // Subcategories - Bakery
     'bakery-bread': [
         { id: 113, name: 'Sourdough Bread', price: 6.5, unit: 'loaf', image: '🍞', stock: 15 },
@@ -241,7 +231,7 @@ const productsData = {
         { id: 275, name: 'Macaron', price: 3.5, unit: 'piece', image: '🍪', stock: 20 },
         { id: 276, name: 'Tiramisu', price: 6.9, unit: 'piece', image: '🍮', stock: 12 }
     ],
-    
+
     // Subcategories - Meat
     'meat-beef': [
         { id: 277, name: 'Beef Steak', price: 28.9, unit: '300g', image: '🥩', stock: 10 },
@@ -267,7 +257,7 @@ const productsData = {
         { id: 291, name: 'Tuna Steak', price: 25.9, unit: '250g', image: '🐟', stock: 8 },
         { id: 292, name: 'Mussels', price: 14.9, unit: '500g', image: '🦪', stock: 15 }
     ],
-    
+
     // Subcategories - Drinks
     'drinks-water': [
         { id: 293, name: 'Still Water', price: 1.9, unit: '1.5L', image: '💧', stock: 50 },
@@ -295,8 +285,7 @@ const productsData = {
     ]
 };
 
-// Color mapping
-const colorMap = {
+export const colorMap = {
     'green': '#10b981',
     'lime': '#84cc16',
     'amber': '#f59e0b',
@@ -304,152 +293,3 @@ const colorMap = {
     'red': '#ef4444',
     'blue': '#3b82f6'
 };
-
-const Category = () => {
-    const [, setProducts] = useAtom(productsAtom);
-    const [activeCategory, setActiveCategory] = useAtom(categoryAtom);
-    const [searchTerm] = useAtom(searchTermAtom);
-    const [activeSubcategory, setActiveSubcategory] = useState(null);
-    const [expandedCategories, setExpandedCategories] = useState({});
-
-    // Initialize with the first category's products
-    useEffect(() => {
-        if (categoriesData.length > 0) {
-            // Always initialize products on component mount
-            handleCategoryClick(categoriesData[0].id);
-        }
-    }, []);  // Only run once on component mount
-
-    // Auto-expand the parent category when a subcategory is active
-    useEffect(() => {
-        if (activeCategory && activeCategory.includes('-')) {
-            const mainCategory = activeCategory.split('-')[0];
-            setExpandedCategories(prev => ({
-                ...prev,
-                [mainCategory]: true
-            }));
-        }
-    }, [activeCategory]);
-
-    const handleCategoryClick = (categoryId) => {
-        // Toggle expanded state
-        setExpandedCategories(prev => ({
-            ...prev,
-            [categoryId]: !prev[categoryId]
-        }));
-        
-        setActiveCategory(categoryId);
-        setActiveSubcategory(null); // Reset active subcategory
-        
-        // Load products for this category
-        setProducts(productsData[categoryId] || []);
-    };
-
-    const handleSubcategoryClick = (categoryId, subcategoryId) => {
-        setActiveCategory(subcategoryId);
-        setActiveSubcategory(subcategoryId);
-        
-        // Load products for this subcategory
-        setProducts(productsData[subcategoryId] || []);
-    };
-
-    // Find the parent category of a subcategory
-    const findParentCategory = (subcategoryId) => {
-        for (const category of categoriesData) {
-            if (category.subcategories) {
-                for (const subcategory of category.subcategories) {
-                    if (subcategory.id === subcategoryId) {
-                        return category.id;
-                    }
-                }
-            }
-        }
-        return null;
-    };
-
-    // Determine if a subcategory is active
-    const isSubcategoryActive = (subcategoryId) => {
-        return activeCategory === subcategoryId;
-    };
-
-    // Determine if a main category is active (either directly or via a subcategory)
-    const isMainCategoryActive = (categoryId) => {
-        // If directly active
-        if (activeCategory === categoryId && !activeSubcategory) {
-            return true;
-        }
-        
-        // If one of its subcategories is active
-        if (activeCategory && activeCategory.includes('-')) {
-            const parentCategory = findParentCategory(activeCategory);
-            return parentCategory === categoryId;
-        }
-        
-        return false;
-    };
-
-    return (
-        <div className="category-container">
-            <div className="category-content">
-                <h2 className="category-title">Categories</h2>
-
-                <div className="category-list">
-                    {categoriesData.map((category) => {
-                        const isActive = isMainCategoryActive(category.id);
-                        const isExpanded = expandedCategories[category.id];
-                        const hasSubcategories = category.subcategories && category.subcategories.length > 0;
-                        
-                        return (
-                            <div key={category.id} className="category-item">
-                                <button
-                                    className={`category-button ${isActive ? 'active' : ''}`}
-                                    style={{
-                                        backgroundColor: isActive ? colorMap[category.color] : '',
-                                    }}
-                                    onClick={() => handleCategoryClick(category.id)}
-                                >
-                                    <div className="category-button-content">
-                                        <span className="category-icon">{category.icon}</span>
-                                        <span className="category-name">{category.name}</span>
-                                        {hasSubcategories && (
-                                            isExpanded ? 
-                                                <KeyboardArrowDownIcon className="category-arrow" /> : 
-                                                <KeyboardArrowRightIcon className="category-arrow" />
-                                        )}
-                                    </div>
-                                </button>
-                                
-                                {hasSubcategories && (
-                                    <div className={`subcategory-container ${isExpanded ? 'visible' : ''}`}>
-                                        {category.subcategories.map(subcategory => {
-                                            const isSubActive = isSubcategoryActive(subcategory.id);
-                                            
-                                            return (
-                                                <button
-                                                    key={subcategory.id}
-                                                    className={`subcategory-button ${isSubActive ? 'active' : ''}`}
-                                                    onClick={() => handleSubcategoryClick(category.id, subcategory.id)}
-                                                >
-                                                    <div className="category-button-content">
-                                                        <span className="category-name">{subcategory.name}</span>
-                                                        <KeyboardArrowRightIcon fontSize="small" className="category-arrow" />
-                                                    </div>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
-
-                <div className="category-counter">
-                    {categoriesData.length} categories
-                </div>
-            </div>
-        </div>
-    );
-};
-
-export default Category;

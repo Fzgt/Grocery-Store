@@ -1,5 +1,3 @@
-import { ChevronRightIcon } from '@radix-ui/react-icons';
-
 const Footer = () => (
     <footer style={{
         backgroundColor: '#1a1a1a',

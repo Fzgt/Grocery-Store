@@ -1,5 +1,3 @@
-// Products.jsx
-import { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { productsAtom, searchTermAtom, categoryAtom } from '../store/atoms';
 import ProductCard from './ProductCard';
@@ -13,16 +11,16 @@ const Products = () => {
     // Display category name with proper formatting
     const getCategoryDisplayName = () => {
         if (!category) return '';
-        
+
         // Handle subcategories
         if (category.includes('-')) {
             const parts = category.split('-');
             // Capitalize first letter of each part
-            return parts.map(part => 
+            return parts.map(part =>
                 part.charAt(0).toUpperCase() + part.slice(1)
             ).join(' - ');
         }
-        
+
         // Regular category
         return category.charAt(0).toUpperCase() + category.slice(1);
     };
@@ -32,8 +30,8 @@ const Products = () => {
             <div className="products-content">
                 <div className="products-header">
                     <h2 className="products-title">
-                        {searchTerm 
-                            ? `Search Results for "${searchTerm}"` 
+                        {searchTerm
+                            ? `Search Results for "${searchTerm}"`
                             : `${getCategoryDisplayName()}`
                         }
                     </h2>

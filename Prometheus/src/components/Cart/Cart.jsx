@@ -48,7 +48,6 @@ const Cart = () => {
         clearCartFromStorage();
     };
 
-    // 简化的下单流程，只负责导航到配送页面
     const handlePlaceOrder = () => {
         if (cart.length === 0) return;
         navigate('/delivery');

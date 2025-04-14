@@ -1,5 +1,5 @@
 import './App.css'
-import { Navbar, Category, Products, Footer, Cart, Messages, DeliveryDetails, OrderConfirmation, OrderSuccess } from './components/export.js';
+import { Navbar, Category, Products, Footer, Cart, Messages, DeliveryDetails, OrderSuccess } from './components/export.js';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
@@ -22,7 +22,7 @@ const HomePage = () => (
 
 const Layout = ({ children }) => {
   const location = useLocation();
-  const hideCategories = ['/cart', '/delivery', '/confirmation', '/messages', '/order-success'].includes(location.pathname);
+  const hideCategories = ['/cart', '/delivery', '/messages', '/order-success'].includes(location.pathname);
 
   if (hideCategories) {
     return <div style={{ padding: '16px', backgroundColor: '#121212' }}>{children}</div>;
@@ -79,11 +79,6 @@ const App = () => {
             <Route path="/delivery" element={
               <Layout>
                 <DeliveryDetails />
-              </Layout>
-            } />
-            <Route path="/confirmation" element={
-              <Layout>
-                <OrderConfirmation />
               </Layout>
             } />
             <Route path="/order-success" element={

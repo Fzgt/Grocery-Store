@@ -35,7 +35,7 @@ const Navbar = () => {
     const searchRef = useRef(null);
     const inputRef = useRef(null);
 
-    const hideSearch = ['/cart', '/delivery', '/confirmation', '/messages'].includes(location.pathname);
+    const hideSearch = ['/cart', '/delivery', '/messages'].includes(location.pathname);
 
     useEffect(() => {
         const getProducts = async () => {
@@ -51,33 +51,35 @@ const Navbar = () => {
         getProducts();
     }, [deferredValue]);
 
+    const filterFuzzySearch = () => {
+        const searchLower = searchTerm.toLowerCase();
+        const filtered = allProducts.filter(product => {
+            const nameMatch = product.name.toLowerCase().includes(searchLower);
+            const categoryMatch = product.category.toLowerCase().includes(searchLower);
+
+            let descriptionMatch = false;
+            if (product.description) {
+                const keywords = product.description.toLowerCase().split(' ');
+                descriptionMatch = keywords.some(keyword =>
+                    keyword.includes(searchLower) || searchLower.includes(keyword)
+                );
+            }
+
+            return nameMatch || categoryMatch || descriptionMatch;
+        });
+
+        return filtered;
+    }
+
     useEffect(() => {
         if (searchTerm.trim() !== '') {
-            const searchLower = searchTerm.toLowerCase();
-            const filteredResults = allProducts.filter(product => {
-                // 检查名称和类别
-                const nameMatch = product.name.toLowerCase().includes(searchLower);
-                const categoryMatch = product.category.toLowerCase().includes(searchLower);
-
-                // 检查描述关键词
-                let descriptionMatch = false;
-                if (product.description) {
-                    // 将描述分割成关键词数组
-                    const keywords = product.description.toLowerCase().split(' ');
-                    // 只要有一个关键词匹配就返回true
-                    descriptionMatch = keywords.some(keyword =>
-                        keyword.includes(searchLower) || searchLower.includes(keyword)
-                    );
-                }
-
-                // 如果名称、类别或描述任一匹配，则返回true
-                return nameMatch || categoryMatch || descriptionMatch;
-            });
+            const filteredResults = filterFuzzySearch();
             setSearchResults(filteredResults);
         } else {
             setSearchResults([]);
         }
     }, [searchTerm, allProducts]);
+
 
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
@@ -93,23 +95,7 @@ const Navbar = () => {
             if (selectedIndex >= 0 && selectedIndex < searchResults.length) {
                 selectProduct(searchResults[selectedIndex]);
             } else {
-                const searchLower = searchTerm.toLowerCase();
-                // Fuzzy Search
-                const filtered = allProducts.filter(product => {
-                    const nameMatch = product.name.toLowerCase().includes(searchLower);
-                    const categoryMatch = product.category.toLowerCase().includes(searchLower);
-
-                    let descriptionMatch = false;
-                    if (product.description) {
-                        const keywords = product.description.toLowerCase().split(' ');
-                        descriptionMatch = keywords.some(keyword =>
-                            keyword.includes(searchLower) || searchLower.includes(keyword)
-                        );
-                    }
-
-                    return nameMatch || categoryMatch || descriptionMatch;
-                });
-
+                const filtered = filterFuzzySearch();
                 setProducts(filtered);
 
                 if (filtered.length > 0) {
