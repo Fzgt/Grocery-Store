@@ -17,10 +17,10 @@ export const fetchProducts = async () => {
     }
 };
 
-// 下单并更新库存的API
+// API for placing orders and updating inventory
 export const placeOrder = async (cart) => {
     try {
-        // 准备数据 - 只发送后端需要的字段
+        // Prepare data - only send fields needed by backend
         const cartData = cart.map(item => ({
             id: item.id,
             quantity: item.quantity
@@ -36,9 +36,9 @@ export const placeOrder = async (cart) => {
 
         const data = await response.json();
         
-        // 处理后端返回的库存不足信息
+        // Handle insufficient stock information returned from backend
         if (!data.success && data.insufficientStock) {
-            // 转换为前端需要的格式
+            // Convert to format needed by frontend
             const insufficientItems = data.insufficientStock.map(item => ({
                 id: item.id,
                 name: item.name,
@@ -48,7 +48,7 @@ export const placeOrder = async (cart) => {
             
             return {
                 success: false,
-                message: data.message || '部分商品库存不足，无法完成订单',
+                message: data.message || 'Some items are out of stock, cannot complete order',
                 insufficientItems
             };
         }

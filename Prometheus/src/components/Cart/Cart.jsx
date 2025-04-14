@@ -14,8 +14,8 @@ const Cart = () => {
     const [cart, setCart] = useAtom(cartAtom);
     const navigate = useNavigate();
 
-
-    const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    const totalPrice = cart.reduce((total, item) => 
+        total + (Number(item.price) * item.quantity), 0);
 
     const increaseQuantity = (itemId) => {
         const newCart = cart.map(item =>
@@ -84,6 +84,8 @@ const Cart = () => {
                             <span className="cart-header-actions"></span>
                         </div>
 
+                        {console.log(cart)}
+
                         {cart.map(item => (
                             <div key={item.id} className="cart-item">
                                 <div className="cart-item-product">
@@ -91,7 +93,7 @@ const Cart = () => {
                                     <span className="cart-item-name">{item.name}</span>
                                 </div>
 
-                                <div className="cart-item-price">${item.price.toFixed(2)}</div>
+                                <div className="cart-item-price">${Number(item.price).toFixed(2)}</div>
 
                                 <div className="cart-item-quantity">
                                     <button
@@ -111,7 +113,7 @@ const Cart = () => {
                                 </div>
 
                                 <div className="cart-item-total">
-                                    ${(item.price * item.quantity).toFixed(2)}
+                                    ${(Number(item.price) * item.quantity).toFixed(2)}
                                 </div>
 
                                 <div className="cart-item-actions">

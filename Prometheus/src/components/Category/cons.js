@@ -80,7 +80,7 @@ export const productsData = {
         { id: 2, name: 'Thai Banana', price: 6.5, unit: 'bunch', image: '🍌', stock: 42 },
         { id: 3, name: 'Dragon Fruit', price: 15.8, unit: 'piece', image: '🐉', stock: 18 },
         { id: 4, name: 'Blueberries', price: 28.9, unit: 'box', image: '🫐', stock: 15 },
-        { id: 201, name: 'Watermelon', price: 8.5, unit: 'kg', image: '🍉', stock: 20 },
+        { id: 21, name: 'Watermelon', price: 8.5, unit: 'kg', image: '🍉', stock: 20 },
         { id: 202, name: 'Peach', price: 4.9, unit: 'piece', image: '🍑', stock: 25 },
         { id: 203, name: 'Strawberries', price: 7.9, unit: 'box', image: '🍓', stock: 18 },
         { id: 204, name: 'Oranges', price: 3.5, unit: '4 pack', image: '🍊', stock: 30 }
@@ -283,13 +283,4 @@ export const productsData = {
         { id: 307, name: 'Herbal Tea', price: 8.5, unit: '30 bags', image: '🍵', stock: 15 },
         { id: 308, name: 'Ground Coffee', price: 12.9, unit: '250g', image: '☕', stock: 20 }
     ]
-};
-
-export const colorMap = {
-    'green': '#10b981',
-    'lime': '#84cc16',
-    'amber': '#f59e0b',
-    'orange': '#f97316',
-    'red': '#ef4444',
-    'blue': '#3b82f6'
 };

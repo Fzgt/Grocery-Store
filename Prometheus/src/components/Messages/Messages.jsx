@@ -89,7 +89,7 @@ const Messages = () => {
   }, []);
 
   const formatPrice = useCallback((price) => {
-    return `$${price.toFixed(2)}`;
+    return `$${Number(price).toFixed(2)}`;
   }, []);
 
   useEffect(() => {

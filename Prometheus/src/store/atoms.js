@@ -1,25 +1,25 @@
 // atoms.js
 import { atom } from 'jotai';
 
-// 存储当前产品列表的atom
+// Store current product list atom
 export const productsAtom = atom([]);
 
-// 存储当前选中分类的atom
+// Store current selected category atom
 export const categoryAtom = atom('fruits');
 
-// 购物车atom
+// Cart atom
 export const cartAtom = atom([]);
 
-// 用户状态atom
+// User state atom
 export const userAtom = atom(null);
 
-// 通知消息atom
+// Notification messages atom
 export const notificationsAtom = atom([]);
 
-// 订单历史atom
-export const ordersAtom = atom([]);
+// Order history atom
+export const orderHistoryAtom = atom([]);
 
-// 搜索关键词atom
+// Search term atom
 export const searchTermAtom = atom('');
 
 // Store all products across all categories for global search
@@ -42,7 +42,7 @@ export const cartItemCountAtom = atom(
 export const cartTotalAtom = atom(
   (get) => {
     const cart = get(cartAtom);
-    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return cart.reduce((total, item) => total + (Number(item.price) * item.quantity), 0);
   }
 );
 

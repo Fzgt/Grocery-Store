@@ -40,7 +40,7 @@
 .cart-header-quantity,
 .cart-header-total,
 .cart-header-actions {
-  /* 保留这些选择器，它们在JSX中被使用 */
+  /* Keep these selectors, they are used in JSX */
 }
 
 .cart-item {
@@ -112,7 +112,7 @@
 }
 
 .cart-item-actions {
-  /* 保留这个选择器，它在JSX中被使用 */
+  /* Keep this selector, it is used in JSX */
 }
 
 .remove-button {
@@ -288,7 +288,7 @@
   }
 }
 
-/* 订单错误提示样式 */
+/* Order error message styles */
 .order-error-container {
   margin-bottom: 20px;
   animation: fadeIn 0.3s ease-in-out;
@@ -341,14 +341,14 @@
   }
 }
 
-/* 禁用按钮样式 */
+/* Disabled button styles */
 .checkout-button.disabled, 
 .clear-cart-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-/* 处理中状态 */
+/* Processing state */
 .checkout-button:disabled:not(.disabled) {
   background-color: #2563eb;
   cursor: progress;

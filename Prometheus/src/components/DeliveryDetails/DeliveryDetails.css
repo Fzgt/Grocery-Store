@@ -139,12 +139,11 @@
 
 @media (max-width: 768px) {
     .delivery-details-container {
-        padding: 1.5rem;
+        padding: 15px;
     }
     
     .form-actions {
         flex-direction: column;
-        gap: 1rem;
     }
     
     .cancel-button,
@@ -153,7 +152,7 @@
     }
 }
 
-/* 成功弹窗样式 */
+/* Success modal styles */
 .success-modal {
   background-color: rgba(0, 0, 0, 0.7);
   position: fixed;

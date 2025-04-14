@@ -46,8 +46,18 @@
   padding: 16px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   border-left: 4px solid #666;
+}
+
+.notification-item.clickable {
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s;
+}
+
+.notification-item.clickable:hover {
+  background-color: #222;
 }
 
 .notification-content {
@@ -62,6 +72,7 @@
 .notification-time {
   font-size: 12px;
   color: #999;
+  margin-bottom: 10px;
 }
 
 .notification-delete {
@@ -77,6 +88,7 @@
   align-items: center;
   border-radius: 50%;
   transition: all 0.2s;
+  z-index: 5;
 }
 
 .notification-delete:hover {
@@ -84,7 +96,7 @@
   color: #fff;
 }
 
-/* 通知类型样式 */
+/* Notification type styles */
 .notification-success {
   border-left-color: #4caf50;
 }
@@ -101,7 +113,7 @@
   border-left-color: #2196f3;
 }
 
-/* 空通知状态 */
+/* Empty notification state */
 .no-notifications {
   display: flex;
   flex-direction: column;
@@ -183,7 +195,7 @@
   font-size: 16px;
 }
 
-/* 响应式设计 */
+/* Responsive design */
 @media (max-width: 768px) {
   .order-info {
     grid-template-columns: 1fr;

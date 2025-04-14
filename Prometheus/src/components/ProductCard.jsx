@@ -104,7 +104,7 @@ const ProductCard = ({ product }) => {
 
                 <div className="product-price-container">
                     <div className="product-price">
-                        <span className="price-amount">${product.price}</span>
+                        <span className="price-amount">${Number(product.price).toFixed(2)}</span>
                         <span className="price-unit">/{product.unit}</span>
                     </div>
                     <span className={isInStock ? "stock-indicator in-stock" : "stock-indicator out-of-stock"}>

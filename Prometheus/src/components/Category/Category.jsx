@@ -1,8 +1,7 @@
-// Category.jsx
 import { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { productsAtom, categoryAtom, colorMap } from '../../store/atoms';
-import { categoriesData, productsData } from './cons';
+import { productsAtom, categoryAtom, allProductsAtom } from '../../store/atoms';
+import { getFormattedProductData, colorMap } from '../../utils/productDataUtils';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import './Category.css';
@@ -10,17 +9,46 @@ import './Category.css';
 
 const Category = () => {
     const [, setProducts] = useAtom(productsAtom);
+    const [, setAllProducts] = useAtom(allProductsAtom);
     const [activeCategory, setActiveCategory] = useAtom(categoryAtom);
     const [activeSubcategory, setActiveSubcategory] = useState(null);
     const [expandedCategories, setExpandedCategories] = useState({});
+    const [categoriesData, setCategoriesData] = useState([]);
+    const [productsData, setProductsData] = useState({});
+    const [loading, setLoading] = useState(true);
 
-    // Initialize with the first category's products
+    // 加载产品数据
     useEffect(() => {
-        if (categoriesData.length > 0) {
-            // Always initialize products on component mount
-            handleCategoryClick(categoriesData[0].id);
-        }
-    }, []);  // Only run once on component mount
+        const loadProductData = async () => {
+            setLoading(true);
+            try {
+                const { categoriesData, productsData } = await getFormattedProductData();
+                setCategoriesData(categoriesData);
+                setProductsData(productsData);
+                
+                // 将所有产品合并到一个数组中，用于全局搜索
+                const allProducts = Object.values(productsData)
+                    .flat()
+                    .filter((product, index, self) => 
+                        index === self.findIndex(p => p.id === product.id)
+                    );
+                setAllProducts(allProducts);
+                
+                // 初始化第一个分类的产品
+                if (categoriesData.length > 0) {
+                    const firstCategory = categoriesData[0].id;
+                    setActiveCategory(firstCategory);
+                    setProducts(productsData[firstCategory] || []);
+                }
+            } catch (error) {
+                console.error('Error loading product data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadProductData();
+    }, [setProducts, setActiveCategory, setAllProducts]);
 
     // Auto-expand the parent category when a subcategory is active
     useEffect(() => {
@@ -89,6 +117,17 @@ const Category = () => {
 
         return false;
     };
+
+    if (loading) {
+        return (
+            <div className="category-container">
+                <div className="category-content">
+                    <h2 className="category-title">Categories</h2>
+                    <div className="category-loading">Loading categories...</div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="category-container">

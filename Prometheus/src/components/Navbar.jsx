@@ -39,13 +39,13 @@ const Navbar = () => {
 
     useEffect(() => {
         const getProducts = async () => {
-            try {
-                console.log("Fetching products for search:", deferredValue);
-                const products = await fetchProducts();
-                setAllProducts(products);
-            } catch (error) {
-                console.error("Error fetching products:", error);
-            }
+            const products = await fetchProducts();
+
+            console.log(products);
+            console.log(products.filter(products => typeof products.price !== 'number'));
+
+            setAllProducts(products);
+
         };
 
         getProducts();

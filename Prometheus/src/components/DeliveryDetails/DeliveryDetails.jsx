@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAtom } from 'jotai';
 import { cartAtom, notificationsAtom } from '../../store/atoms';
 import { useNavigate } from 'react-router-dom';
@@ -9,10 +9,10 @@ import './DeliveryDetails.css';
 
 const DeliveryDetails = () => {
     const [cart, setCart] = useAtom(cartAtom);
-    const [notifications, setNotifications] = useAtom(notificationsAtom);
+    const [, setNotifications] = useAtom(notificationsAtom);
     const navigate = useNavigate();
 
-    // Form state
+    // Form metadata
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -132,26 +132,23 @@ const DeliveryDetails = () => {
             return;
         }
 
-        // 生成订单ID
         const orderId = new Date().getTime().toString().slice(-8);
 
-        // 生成订单数据
         const orderData = {
             items: cart.map(item => ({
                 id: item.id,
                 name: item.name,
                 quantity: item.quantity,
-                price: item.price,
-                total: item.price * item.quantity
+                price: Number(item.price),
+                total: Number(item.price) * item.quantity
             })),
-            totalAmount: cart.reduce((total, item) => total + (item.price * item.quantity), 0),
+            totalAmount: cart.reduce((total, item) => total + (Number(item.price) * item.quantity), 0),
             orderDate: new Date().toISOString(),
             shippingAddress: `${formData.street}, ${formData.city}, ${formData.state}`,
             recipient: formData.name,
             orderId: orderId
         };
 
-        // 添加通知
         setNotifications(prev => [
             {
                 id: Date.now(),
@@ -163,11 +160,9 @@ const DeliveryDetails = () => {
             ...prev
         ]);
 
-        // 清空购物车
         setCart([]);
         clearCartFromStorage();
 
-        // 导航到成功页面
         navigate('/order-success', {
             state: { orderId }
         });
