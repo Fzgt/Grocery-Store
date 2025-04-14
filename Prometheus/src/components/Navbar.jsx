@@ -53,10 +53,26 @@ const Navbar = () => {
 
     useEffect(() => {
         if (searchTerm.trim() !== '') {
-            const filteredResults = allProducts.filter(product =>
-                product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                product.category.toLowerCase().includes(searchTerm.toLowerCase())
-            );
+            const searchLower = searchTerm.toLowerCase();
+            const filteredResults = allProducts.filter(product => {
+                // 检查名称和类别
+                const nameMatch = product.name.toLowerCase().includes(searchLower);
+                const categoryMatch = product.category.toLowerCase().includes(searchLower);
+
+                // 检查描述关键词
+                let descriptionMatch = false;
+                if (product.description) {
+                    // 将描述分割成关键词数组
+                    const keywords = product.description.toLowerCase().split(' ');
+                    // 只要有一个关键词匹配就返回true
+                    descriptionMatch = keywords.some(keyword =>
+                        keyword.includes(searchLower) || searchLower.includes(keyword)
+                    );
+                }
+
+                // 如果名称、类别或描述任一匹配，则返回true
+                return nameMatch || categoryMatch || descriptionMatch;
+            });
             setSearchResults(filteredResults);
         } else {
             setSearchResults([]);
@@ -74,21 +90,28 @@ const Navbar = () => {
         if (searchTerm.trim()) {
             setShowDropdown(false);
 
-            // If an item is selected in the dropdown
             if (selectedIndex >= 0 && selectedIndex < searchResults.length) {
                 selectProduct(searchResults[selectedIndex]);
             } else {
-                // Update products with search results
+                const searchLower = searchTerm.toLowerCase();
+                // Fuzzy Search
                 const filtered = allProducts.filter(product => {
-                    const searchLower = searchTerm.toLowerCase();
-                    return (
-                        product.name.toLowerCase().includes(searchLower) ||
-                        product.category.toLowerCase().includes(searchLower)
-                    );
+                    const nameMatch = product.name.toLowerCase().includes(searchLower);
+                    const categoryMatch = product.category.toLowerCase().includes(searchLower);
+
+                    let descriptionMatch = false;
+                    if (product.description) {
+                        const keywords = product.description.toLowerCase().split(' ');
+                        descriptionMatch = keywords.some(keyword =>
+                            keyword.includes(searchLower) || searchLower.includes(keyword)
+                        );
+                    }
+
+                    return nameMatch || categoryMatch || descriptionMatch;
                 });
+
                 setProducts(filtered);
 
-                // If there's at least one result, update category
                 if (filtered.length > 0) {
                     setCategory(filtered[0].category);
                 }
