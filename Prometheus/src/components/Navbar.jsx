@@ -24,7 +24,6 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ChatIcon from '@mui/icons-material/Chat';
-import { styled, alpha } from '@mui/material/styles';
 
 // Hardcoded product data for search
 const allProducts = [
@@ -84,10 +83,6 @@ const allProducts = [
 ];
 
 
-const NavIconButton = styled(IconButton)(({ theme }) => ({
-    color: 'white',
-    margin: theme.spacing(0, 0.5),
-}));
 
 const Navbar = () => {
     const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
@@ -105,7 +100,7 @@ const Navbar = () => {
     const inputRef = useRef(null);
 
     // Check if we're on a page where search should be hidden
-    const hideSearch = ['/cart'].includes(location.pathname);
+    const hideSearch = ['/cart', '/delivery', '/confirmation'].includes(location.pathname);
 
     // Filter products based on search term
     useEffect(() => {
@@ -204,11 +199,6 @@ const Navbar = () => {
         else if (e.key === 'Escape') {
             setShowDropdown(false);
         }
-    };
-
-    // Navigate to home page
-    const goToHome = () => {
-        navigate('/');
     };
 
     // Close dropdown when clicking outside
@@ -314,7 +304,7 @@ const Navbar = () => {
                             >
                                 <SearchIcon sx={{ color: '#aaa', mr: 1 }} />
                                 <InputBase
-                                    placeholder="Search products"
+                                    placeholder="Search for products, categories, or brands..."
                                     value={searchTerm}
                                     onChange={handleSearchChange}
                                     onFocus={() => searchTerm.trim() && setShowDropdown(true)}

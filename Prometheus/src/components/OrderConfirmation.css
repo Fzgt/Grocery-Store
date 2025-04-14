@@ -1,0 +1,114 @@
+.order-confirmation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 2rem;
+}
+
+.confirmation-card {
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 100%;
+    padding: 2.5rem;
+    color: #fff;
+}
+
+.confirmation-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.confirmation-icon {
+    font-size: 4rem !important;
+    color: #4caf50;
+    margin-bottom: 1rem;
+}
+
+.confirmation-header h1 {
+    font-size: 2rem;
+    margin: 0;
+    color: #fff;
+}
+
+.confirmation-details {
+    margin-bottom: 2rem;
+}
+
+.confirmation-message {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.order-info {
+    background-color: #2c2c2c;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.order-info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #444;
+}
+
+.order-info-row:last-child {
+    border-bottom: none;
+}
+
+.order-info-row span:first-child {
+    color: #aaa;
+    font-weight: 500;
+}
+
+.order-info-row span:last-child {
+    font-weight: 500;
+}
+
+.estimated-delivery {
+    text-align: center;
+    color: #aaa;
+}
+
+.confirmation-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.continue-shopping-button {
+    background-color: #7878ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.continue-shopping-button:hover {
+    background-color: #6868ee;
+}
+
+@media (max-width: 768px) {
+    .confirmation-card {
+        padding: 1.5rem;
+    }
+    
+    .confirmation-header h1 {
+        font-size: 1.75rem;
+    }
+    
+    .confirmation-message {
+        font-size: 1rem;
+    }
+} 

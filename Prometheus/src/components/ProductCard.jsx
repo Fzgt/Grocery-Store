@@ -2,7 +2,9 @@ import { useAtom } from 'jotai';
 import { cartAtom } from '../store/atoms';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
+import { saveCartToStorage, clearCartFromStorage } from '../utils/cartUtils';
 import './ProductCard.css';
+
 
 const ProductCard = ({ product }) => {
     const [cart, setCart] = useAtom(cartAtom);
@@ -10,32 +12,41 @@ const ProductCard = ({ product }) => {
     // Find product quantity in cart
     const cartItem = cart.find(item => item.id === product.id);
     const quantity = cartItem ? cartItem.quantity : 0;
+    
+    // Check if product is in stock
+    const isInStock = product.stock > 0;
 
     const handleAddToCart = (e) => {
         e.stopPropagation();
 
-        if (product.stock <= 0) {
+        if (!isInStock) {
             return; // Don't add out of stock items
         }
 
         // Check if item already in cart
         const existingItemIndex = cart.findIndex(item => item.id === product.id);
+        let newCart;
 
         if (existingItemIndex >= 0) {
             // Update existing item quantity
-            const newCart = [...cart];
+            newCart = [...cart];
             newCart[existingItemIndex] = {
                 ...newCart[existingItemIndex],
                 quantity: newCart[existingItemIndex].quantity + 1
             };
-            setCart(newCart);
         } else {
             // Add new item to cart
-            setCart([...cart, {
+            newCart = [...cart, {
                 ...product,
                 quantity: 1
-            }]);
+            }];
         }
+        
+        // Update cart state
+        setCart(newCart);
+        
+        // Update localStorage with new timestamp
+        saveCartToStorage(newCart);
     };
 
     const handleRemoveFromCart = (e) => {
@@ -46,12 +57,20 @@ const ProductCard = ({ product }) => {
 
         if (existingItemIndex >= 0) {
             // Remove item completely
-            setCart(cart.filter(item => item.id !== product.id));
+            const newCart = cart.filter(item => item.id !== product.id);
+            setCart(newCart);
+            
+            // Update localStorage
+            if (newCart.length > 0) {
+                saveCartToStorage(newCart);
+            } else {
+                clearCartFromStorage();
+            }
         }
     };
 
     return (
-        <div className="product-card">
+        <div className={`product-card ${!isInStock ? 'out-of-stock-product' : ''}`}>
             {/* Badges */}
             <div className="product-badges">
                 {product.hot && (
@@ -69,6 +88,9 @@ const ProductCard = ({ product }) => {
                 {product.fresh && (
                     <span className="product-badge badge-fresh">Fresh</span>
                 )}
+                {!isInStock && (
+                    <span className="product-badge badge-out-of-stock">Out of Stock</span>
+                )}
             </div>
 
             {/* Product image */}
@@ -85,29 +107,36 @@ const ProductCard = ({ product }) => {
                         <span className="price-amount">${product.price}</span>
                         <span className="price-unit">/{product.unit}</span>
                     </div>
-                    <span className={product.stock > 0 ? "stock-indicator in-stock" : "stock-indicator out-of-stock"}>
-                        {product.stock > 0 ? "In stock" : "Out of stock"}
+                    <span className={isInStock ? "stock-indicator in-stock" : "stock-indicator out-of-stock"}>
+                        {isInStock ? "In stock" : "Out of stock"}
                     </span>
                 </div>
 
                 {/* Cart controls */}
                 <div className="product-actions">
-                    {quantity > 0 ? (
+                    <button
+                        className={`cart-button add-to-cart ${!isInStock ? 'disabled' : ''}`}
+                        disabled={!isInStock}
+                        onClick={handleAddToCart}
+                    >
+                        <AddShoppingCartIcon style={{ fontSize: 16, marginRight: 4 }} />
+                        <span>
+                            {isInStock 
+                                ? quantity > 0 
+                                    ? `Add to Cart (${quantity})` 
+                                    : 'Add to Cart'
+                                : 'Out of Stock'
+                            }
+                        </span>
+                    </button>
+                    
+                    {quantity > 0 && (
                         <button
                             className="cart-button remove-from-cart"
                             onClick={handleRemoveFromCart}
                         >
                             <RemoveShoppingCartIcon style={{ fontSize: 16, marginRight: 4 }} />
-                            <span>Remove from Cart</span>
-                        </button>
-                    ) : (
-                        <button
-                            className="cart-button add-to-cart"
-                            disabled={product.stock <= 0}
-                            onClick={handleAddToCart}
-                        >
-                            <AddShoppingCartIcon style={{ fontSize: 16, marginRight: 4 }} />
-                            <span>Add to Cart</span>
+                            <span>Remove</span>
                         </button>
                     )}
                 </div>

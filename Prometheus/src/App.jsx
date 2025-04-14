@@ -1,6 +1,11 @@
 import './App.css'
-import { Navbar, Category, Products, Footer, Cart, Messages } from './components/export.js';
+import { Navbar, Category, Products, Footer, Cart, Messages, DeliveryDetails, OrderConfirmation } from './components/export.js';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useAtom } from 'jotai';
+import { cartAtom } from './store/atoms';
+import { loadCartFromStorage } from './utils/cartUtils';
 
 // 主页组件
 const HomePage = () => (
@@ -16,7 +21,40 @@ const HomePage = () => (
   </div>
 )
 
+// Layout component to conditionally render children with/without categories
+const Layout = ({ children }) => {
+  const location = useLocation();
+  const hideCategories = ['/cart', '/delivery', '/confirmation', '/messages'].includes(location.pathname);
+
+  if (hideCategories) {
+    return <div style={{ padding: '16px', backgroundColor: '#121212' }}>{children}</div>;
+  }
+
+  return (
+    <div style={{ padding: '16px', backgroundColor: '#121212' }}>
+      <div className="home-grid">
+        <div className="category-container">
+          <Category />
+        </div>
+        <div className="products-container">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const App = () => {
+  const [, setCart] = useAtom(cartAtom);
+  
+  // Load cart from localStorage on initial app load
+  useEffect(() => {
+    const savedCart = loadCartFromStorage();
+    if (savedCart) {
+      setCart(savedCart);
+    }
+  }, [setCart]);
+  
   return (
     <BrowserRouter>
       <div style={{ 
@@ -30,8 +68,26 @@ const App = () => {
         <div style={{ flex: '1 0 auto' }}>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/messages" element={<Messages />} />
-            <Route path="/cart" element={<Cart />} />
+            <Route path="/messages" element={
+              <Layout>
+                <Messages />
+              </Layout>
+            } />
+            <Route path="/cart" element={
+              <Layout>
+                <Cart />
+              </Layout>
+            } />
+            <Route path="/delivery" element={
+              <Layout>
+                <DeliveryDetails />
+              </Layout>
+            } />
+            <Route path="/confirmation" element={
+              <Layout>
+                <OrderConfirmation />
+              </Layout>
+            } />
           </Routes>
         </div>
         

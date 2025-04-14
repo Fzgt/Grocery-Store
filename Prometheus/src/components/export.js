@@ -1,15 +1,21 @@
-import Category from './Category.jsx';
-import Footer from './Footer.jsx';
-import Products from './Products.jsx';
-import Navbar from './Navbar.jsx';
-import Cart from './Cart.jsx';
-import Messages from './Messages.jsx';
+import Navbar from './Navbar';
+import Products from './Products';
+import Category from './Category';
+import Footer from './Footer';
+import Cart from './Cart';
+import ProductCard from './ProductCard';
+import Messages from './Messages';
+import DeliveryDetails from './DeliveryDetails';
+import OrderConfirmation from './OrderConfirmation';
 
 export {
+    Navbar,
+    Products,
     Category,
     Footer,
-    Products,
-    Navbar,
     Cart,
+    ProductCard,
     Messages,
-}
+    DeliveryDetails,
+    OrderConfirmation
+};
