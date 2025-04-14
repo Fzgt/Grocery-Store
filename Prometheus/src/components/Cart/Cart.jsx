@@ -1,20 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { cartAtom, notificationsAtom } from '../../store/atoms';
+import { cartAtom } from '../../store/atoms';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { saveCartToStorage, clearCartFromStorage } from '../../utils/cartUtils';
+import { placeOrder } from '../../utils/utils';
 import './Cart.css';
 
 
 const Cart = () => {
     const [cart, setCart] = useAtom(cartAtom);
-    const [notifications, setNotifications] = useAtom(notificationsAtom);
+    const [loading, setLoading] = useState(false);
+    const [orderError, setOrderError] = useState(null);
     const navigate = useNavigate();
-    const location = useLocation();
 
 
     const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
@@ -50,9 +51,36 @@ const Cart = () => {
         clearCartFromStorage();
     };
 
-    const handleProceedToCheckout = () => {
+    const handlePlaceOrder = async () => {
         if (cart.length === 0) return;
-        navigate('/delivery');
+
+        setLoading(true);
+        setOrderError(null);
+
+        try {
+            const response = await placeOrder(cart);
+
+            if (response.success) {
+                navigate('/delivery');
+            } else {
+                setOrderError({
+                    message: response.message || 'Order processing failed',
+                    insufficientItems: response.insufficientItems || []
+                });
+            }
+        } catch (error) {
+            console.error('Place order error:', error);
+            setOrderError({
+                message: 'Network error occurred while processing the order',
+                insufficientItems: []
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const dismissError = () => {
+        setOrderError(null);
     };
 
     useEffect(() => {
@@ -66,7 +94,38 @@ const Cart = () => {
         <div className="cart-page">
             <h1 className="cart-title">Shopping Cart</h1>
 
-            {cart.length > 0 ? (
+            {orderError && (
+                <div className="order-error-container">
+                    <div className="order-error">
+                        <h3>Order processing failed</h3>
+                        <p>{orderError.message}</p>
+                        {orderError.insufficientItems && orderError.insufficientItems.length > 0 && (
+                            <div>
+                                <p>Out of Stock Items:</p>
+                                <ul>
+                                    {orderError.insufficientItems.map(item => (
+                                        <li key={item.id}>
+                                            {item.name} - Need: {item.requestedQuantity}, Available: {item.availableQuantity}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                        <button onClick={dismissError}>Close</button>
+                    </div>
+                </div>
+            )}
+
+            {cart.length === 0 ? (
+                <div className="empty-cart">
+                    <ShoppingCartIcon style={{ fontSize: 60, opacity: 0.7 }} />
+                    <h2>Your cart is empty</h2>
+                    <p>Items added to your cart will appear here</p>
+                    <Link to="/" className="continue-shopping-link">
+                        Continue Shopping
+                    </Link>
+                </div>
+            ) : (
                 <div className="cart-container">
                     <div className="cart-items">
                         <div className="cart-header">
@@ -138,27 +197,19 @@ const Cart = () => {
                             <button
                                 className="clear-cart-button"
                                 onClick={clearCart}
+                                disabled={loading}
                             >
                                 Clear Cart
                             </button>
                             <button
                                 className={`checkout-button ${cart.length === 0 ? 'disabled' : ''}`}
-                                onClick={handleProceedToCheckout}
-                                disabled={cart.length === 0}
+                                onClick={handlePlaceOrder}
+                                disabled={cart.length === 0 || loading}
                             >
-                                Place Order
+                                {loading ? 'Processing...' : 'Place Order'}
                             </button>
                         </div>
                     </div>
-                </div>
-            ) : (
-                <div className="empty-cart">
-                    <ShoppingCartIcon style={{ fontSize: 60, opacity: 0.7 }} />
-                    <h2>Your cart is empty</h2>
-                    <p>Items added to your cart will appear here</p>
-                    <Link to="/" className="continue-shopping-link">
-                        Continue Shopping
-                    </Link>
                 </div>
             )}
         </div>

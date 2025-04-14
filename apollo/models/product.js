@@ -2,11 +2,14 @@ const pool = require('./pool');
 
 class Product {
     constructor(product) {
-        this.product_id = product.product_id;
-        this.product_name = product.product_name;
-        this.unit_price = product.unit_price;
-        this.unit_quantity = product.unit_quantity;
-        this.in_stock = product.in_stock;
+        this.id = product.id;
+        this.name = product.name;
+        this.price = product.price;
+        this.unit = product.unit;
+        this.image = product.image;
+        this.stock = product.stock;
+        this.category = product.category;
+        this.description = product.description;
     }
 
     static getAll(result) {
@@ -21,9 +24,8 @@ class Product {
         });
     }
 
-    // 检查库存并更新库存方法
     static checkAndUpdateStock(cart, result) {
-        // 首先创建事务以确保操作的原子性
+        // begin transaction
         pool.getConnection((err, connection) => {
             if (err) {
                 console.log("Database connection error: ", err);
@@ -39,30 +41,29 @@ class Product {
                     return;
                 }
 
-                // 存储库存不足的商品信息
                 const insufficientStock = [];
-                // 检查每个商品的库存
+                // check stock for each product in the cart
                 const checkStockPromises = cart.map(item => {
                     return new Promise((resolve, reject) => {
                         connection.query(
-                            "SELECT product_id, product_name, in_stock FROM products WHERE product_id = ?",
+                            "SELECT id, name, stock FROM products WHERE id = ?",
                             [item.id],
                             (err, res) => {
                                 if (err) {
                                     return reject(err);
                                 }
-                                
+
                                 if (res.length === 0) {
                                     return reject(new Error(`Product with ID ${item.id} not found`));
                                 }
-                                
+
                                 const product = res[0];
-                                if (product.in_stock < item.quantity) {
+                                if (product.stock < item.quantity) {
                                     insufficientStock.push({
-                                        id: product.product_id,
-                                        name: product.product_name,
+                                        id: product.id,
+                                        name: product.name,
                                         requested: item.quantity,
-                                        available: product.in_stock
+                                        available: product.stock
                                     });
                                 }
                                 resolve();
@@ -71,27 +72,26 @@ class Product {
                     });
                 });
 
-                // 执行所有库存检查
+                // stock check
                 Promise.all(checkStockPromises)
                     .then(() => {
-                        // 如果存在库存不足的商品，则回滚事务并返回错误
+                        // if exists insufficient stock, rollback the transaction
                         if (insufficientStock.length > 0) {
                             connection.rollback(() => {
                                 connection.release();
-                                result(null, { 
-                                    success: false, 
-                                    message: "Insufficient stock for some products", 
-                                    insufficientStock 
+                                result(null, {
+                                    success: false,
+                                    message: "Insufficient stock for some products",
+                                    insufficientStock
                                 });
                             });
                             return;
                         }
-
-                        // 所有商品库存充足，开始更新库存
+                        // if all in stock, update the stock
                         const updatePromises = cart.map(item => {
                             return new Promise((resolve, reject) => {
                                 connection.query(
-                                    "UPDATE products SET in_stock = in_stock - ? WHERE product_id = ?",
+                                    "UPDATE products SET stock = stock - ? WHERE id = ?",
                                     [item.quantity, item.id],
                                     (err, res) => {
                                         if (err) {
@@ -103,10 +103,8 @@ class Product {
                             });
                         });
 
-                        // 执行所有库存更新
                         Promise.all(updatePromises)
                             .then(() => {
-                                // 提交事务
                                 connection.commit(err => {
                                     if (err) {
                                         connection.rollback(() => {
@@ -116,11 +114,11 @@ class Product {
                                         });
                                         return;
                                     }
-                                    
+
                                     connection.release();
-                                    result(null, { 
-                                        success: true, 
-                                        message: "Order placed successfully, stock updated" 
+                                    result(null, {
+                                        success: true,
+                                        message: "Order placed successfully, stock updated"
                                     });
                                 });
                             })
