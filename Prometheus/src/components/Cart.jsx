@@ -1,7 +1,6 @@
-import { useState } from 'react';
 import { useAtom } from 'jotai';
-import { cartAtom, cartTotalAtom, notificationsAtom, unreadNotificationsCountAtom } from '../store/atoms';
-import { Link, useNavigate } from 'react-router-dom';
+import { cartAtom, notificationsAtom } from '../store/atoms';
+import { Link } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -10,12 +9,7 @@ import './Cart.css';
 
 const Cart = () => {
     const [cart, setCart] = useAtom(cartAtom);
-    const [cartTotal] = useAtom(cartTotalAtom);
     const [notifications, setNotifications] = useAtom(notificationsAtom);
-    const [, setUnreadCount] = useAtom(unreadNotificationsCountAtom);
-    const [promoCode, setPromoCode] = useState('');
-    const [promoDiscount, setPromoDiscount] = useState(0);
-    const navigate = useNavigate();
 
     // Calculate total price
     const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);

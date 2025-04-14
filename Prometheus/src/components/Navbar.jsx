@@ -1,21 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAtom } from 'jotai';
-import { 
-    searchTermAtom, 
-    cartItemCountAtom, 
-    unreadNotificationsCountAtom, 
-    notificationsAtom, 
+import {
+    searchTermAtom,
+    cartItemCountAtom,
+    unreadNotificationsCountAtom,
     userAtom,
     productsAtom,
     categoryAtom
 } from '../store/atoms';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { 
-    Box, 
-    InputBase, 
-    IconButton, 
-    Badge, 
-    Paper, 
+import {
+    Box,
+    InputBase,
+    IconButton,
+    Badge,
+    Paper,
     List,
     ListItem,
     ListItemText,
@@ -26,10 +25,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ChatIcon from '@mui/icons-material/Chat';
 import { styled, alpha } from '@mui/material/styles';
-import Popper from '@mui/material/Popper';
-import Grow from '@mui/material/Grow';
-import ClickAwayListener from '@mui/material/ClickAwayListener';
-import MenuIcon from '@mui/icons-material/Menu';
 
 // Hardcoded product data for search
 const allProducts = [
@@ -44,7 +39,7 @@ const allProducts = [
     { id: 24, name: 'Oranges', price: 3.5, unit: '4 pack', image: '🍊', category: 'fruits' },
     { id: 25, name: 'Lemon', price: 1.5, unit: 'piece', image: '🍋', category: 'fruits' },
     { id: 26, name: 'Green Apple', price: 11.9, unit: '500g', image: '🍏', category: 'fruits' },
-    
+
     // Vegetables
     { id: 5, name: 'Organic Broccoli', price: 8.8, unit: '250g', image: '🥦', category: 'vegetables' },
     { id: 6, name: 'Carrots', price: 3.5, unit: '500g', image: '🥕', category: 'vegetables' },
@@ -56,7 +51,7 @@ const allProducts = [
     { id: 30, name: 'Mushrooms', price: 6.5, unit: '250g', image: '🍄', category: 'vegetables' },
     { id: 31, name: 'Garlic', price: 2.9, unit: 'bulb', image: '🧄', category: 'vegetables' },
     { id: 32, name: 'Onion', price: 1.9, unit: 'piece', image: '🧅', category: 'vegetables' },
-    
+
     // Dairy
     { id: 9, name: 'Plain Yogurt', price: 13.8, unit: '500ml', image: '🥛', category: 'dairy' },
     { id: 10, name: 'Cheddar Cheese', price: 25.9, unit: '200g', image: '🧀', category: 'dairy' },
@@ -66,7 +61,7 @@ const allProducts = [
     { id: 34, name: 'Mozzarella', price: 22.9, unit: '200g', image: '🧀', category: 'dairy' },
     { id: 35, name: 'Cream Cheese', price: 13.5, unit: '200g', image: '🧀', category: 'dairy' },
     { id: 36, name: 'Sour Cream', price: 9.9, unit: '250ml', image: '🥛', category: 'dairy' },
-    
+
     // Bakery
     { id: 13, name: 'Whole Wheat Bread', price: 12.8, unit: 'loaf', image: '🍞', category: 'bakery' },
     { id: 14, name: 'Croissant', price: 8.9, unit: 'piece', image: '🥐', category: 'bakery' },
@@ -76,7 +71,7 @@ const allProducts = [
     { id: 38, name: 'Sourdough Bread', price: 14.9, unit: 'loaf', image: '🍞', category: 'bakery' },
     { id: 39, name: 'Baguette', price: 7.9, unit: 'piece', image: '🥖', category: 'bakery' },
     { id: 40, name: 'Pretzel', price: 4.2, unit: 'piece', image: '🥨', category: 'bakery' },
-    
+
     // Meat
     { id: 17, name: 'Chicken Breast', price: 24.9, unit: '500g', image: '🍗', category: 'meat' },
     { id: 18, name: 'Ground Beef', price: 18.5, unit: '250g', image: '🥩', category: 'meat' },
@@ -88,48 +83,6 @@ const allProducts = [
     { id: 44, name: 'Shrimp', price: 26.9, unit: '250g', image: '🦐', category: 'meat' }
 ];
 
-// Styled components for search
-const SearchWrapper = styled('div')(({ theme }) => ({
-    position: 'relative',
-    borderRadius: '24px',
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
-        backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    width: '320px',
-    margin: '0 auto',
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'white',
-    '& .MuiInputBase-input': {
-        padding: theme.spacing(1, 1, 1, 0),
-        paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-        width: '100%',
-    }
-}));
-
-const SearchResultItem = styled(Paper)(({ theme, isHighlighted }) => ({
-    padding: theme.spacing(1, 2),
-    display: 'flex',
-    alignItems: 'center',
-    cursor: 'pointer',
-    backgroundColor: isHighlighted ? alpha(theme.palette.primary.main, 0.1) : theme.palette.background.paper,
-    '&:hover': {
-        backgroundColor: alpha(theme.palette.primary.main, 0.1),
-    }
-}));
 
 const NavIconButton = styled(IconButton)(({ theme }) => ({
     color: 'white',
@@ -150,7 +103,7 @@ const Navbar = () => {
     const navigate = useNavigate();
     const searchRef = useRef(null);
     const inputRef = useRef(null);
-    
+
     // Check if we're on a page where search should be hidden
     const hideSearch = ['/cart'].includes(location.pathname);
 
@@ -161,7 +114,7 @@ const Navbar = () => {
             return;
         }
 
-        const filteredResults = allProducts.filter(product => 
+        const filteredResults = allProducts.filter(product =>
             product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             product.category.toLowerCase().includes(searchTerm.toLowerCase())
         );
@@ -180,7 +133,7 @@ const Navbar = () => {
         e.preventDefault();
         if (searchTerm.trim()) {
             setShowDropdown(false);
-            
+
             // If an item is selected in the dropdown
             if (selectedIndex >= 0 && selectedIndex < searchResults.length) {
                 selectProduct(searchResults[selectedIndex]);
@@ -189,17 +142,17 @@ const Navbar = () => {
                 const filtered = allProducts.filter(product => {
                     const searchLower = searchTerm.toLowerCase();
                     return (
-                        product.name.toLowerCase().includes(searchLower) || 
+                        product.name.toLowerCase().includes(searchLower) ||
                         product.category.toLowerCase().includes(searchLower)
                     );
                 });
                 setProducts(filtered);
-                
+
                 // If there's at least one result, update category
                 if (filtered.length > 0) {
                     setCategory(filtered[0].category);
                 }
-                
+
                 navigate('/');
             }
         }
@@ -209,44 +162,44 @@ const Navbar = () => {
     const handleResultClick = (product) => {
         selectProduct(product);
     };
-    
+
     // Select a product from search results
     const selectProduct = (product) => {
         setSearchTerm(product.name);
         setShowDropdown(false);
-        
+
         // Update products with matching category
         const categoryProducts = allProducts.filter(p => p.category === product.category);
         setProducts(categoryProducts);
-        
+
         // Update active category
         setCategory(product.category);
-        
+
         navigate('/');
     };
 
     // Handle keyboard navigation
     const handleKeyDown = (e) => {
         if (!showDropdown || searchResults.length === 0) return;
-        
+
         // Arrow down
         if (e.key === 'ArrowDown') {
             e.preventDefault();
             setSelectedIndex(prev => (prev < searchResults.length - 1 ? prev + 1 : 0));
         }
-        
+
         // Arrow up
         else if (e.key === 'ArrowUp') {
             e.preventDefault();
             setSelectedIndex(prev => (prev > 0 ? prev - 1 : searchResults.length - 1));
         }
-        
+
         // Enter to select
         else if (e.key === 'Enter' && selectedIndex >= 0) {
             e.preventDefault();
             selectProduct(searchResults[selectedIndex]);
         }
-        
+
         // Escape to close dropdown
         else if (e.key === 'Escape') {
             setShowDropdown(false);
@@ -265,14 +218,14 @@ const Navbar = () => {
                 setShowDropdown(false);
             }
         };
-        
+
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
     return (
-        <Box 
-            component="header" 
+        <Box
+            component="header"
             sx={{
                 padding: '12px 0',
                 borderBottom: '1px solid #333333',
@@ -282,7 +235,7 @@ const Navbar = () => {
                 zIndex: 10
             }}
         >
-            <Box 
+            <Box
                 sx={{
                     maxWidth: 1400,
                     margin: '0 auto',
@@ -294,11 +247,11 @@ const Navbar = () => {
                 }}
             >
                 {/* Logo */}
-                <Link 
-                    to="/" 
-                    style={{ 
-                        textDecoration: 'none', 
-                        display: 'flex', 
+                <Link
+                    to="/"
+                    style={{
+                        textDecoration: 'none',
+                        display: 'flex',
                         alignItems: 'center',
                         transition: 'opacity 0.2s ease',
                         '&:hover': {
@@ -306,14 +259,14 @@ const Navbar = () => {
                         }
                     }}
                 >
-                    <img 
-                        src="/beyz.png" 
-                        alt="BeyzMarket Logo" 
-                        style={{ 
-                            height: 36, 
-                            marginRight: 10 
-                        }} 
-                    /> 
+                    <img
+                        src="/beyz.png"
+                        alt="BeyzMarket Logo"
+                        style={{
+                            height: 36,
+                            marginRight: 10
+                        }}
+                    />
                     <Typography
                         variant="h6"
                         sx={{
@@ -328,11 +281,11 @@ const Navbar = () => {
 
                 {/* Search Box */}
                 {!hideSearch && (
-                    <Box 
+                    <Box
                         ref={searchRef}
-                        sx={{ 
-                            flex: 1, 
-                            maxWidth: 600, 
+                        sx={{
+                            flex: 1,
+                            maxWidth: 600,
                             mx: 2,
                             position: 'relative'
                         }}
@@ -361,7 +314,7 @@ const Navbar = () => {
                             >
                                 <SearchIcon sx={{ color: '#aaa', mr: 1 }} />
                                 <InputBase
-                                    placeholder="Search products or categories..."
+                                    placeholder="Search products"
                                     value={searchTerm}
                                     onChange={handleSearchChange}
                                     onFocus={() => searchTerm.trim() && setShowDropdown(true)}
@@ -377,7 +330,7 @@ const Navbar = () => {
                                 />
                             </Paper>
                         </form>
-                        
+
                         {showDropdown && searchResults.length > 0 && (
                             <Paper
                                 sx={{
@@ -417,8 +370,8 @@ const Navbar = () => {
                                                 transition: 'background-color 0.15s ease'
                                             }}
                                         >
-                                            <Box sx={{ 
-                                                fontSize: '1.75rem', 
+                                            <Box sx={{
+                                                fontSize: '1.75rem',
                                                 mr: 2,
                                                 display: 'flex',
                                                 alignItems: 'center',
@@ -430,9 +383,9 @@ const Navbar = () => {
                                             </Box>
                                             <ListItemText
                                                 primary={
-                                                    <Typography 
-                                                        variant="body1" 
-                                                        sx={{ 
+                                                    <Typography
+                                                        variant="body1"
+                                                        sx={{
                                                             color: 'white',
                                                             fontWeight: 500
                                                         }}
@@ -441,9 +394,9 @@ const Navbar = () => {
                                                     </Typography>
                                                 }
                                                 secondary={
-                                                    <Typography 
-                                                        variant="body2" 
-                                                        sx={{ 
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{
                                                             color: '#aaa',
                                                             textTransform: 'capitalize'
                                                         }}
@@ -476,15 +429,15 @@ const Navbar = () => {
                             component={Link}
                             to="/messages"
                             color="inherit"
-                            sx={{ 
+                            sx={{
                                 ml: 1,
                                 '&:hover': {
                                     color: '#1976d2'
                                 }
                             }}
                         >
-                            <Badge 
-                                badgeContent={unreadCount} 
+                            <Badge
+                                badgeContent={unreadCount}
                                 color="error"
                             >
                                 <ChatIcon />
@@ -497,15 +450,15 @@ const Navbar = () => {
                             component={Link}
                             to="/cart"
                             color="inherit"
-                            sx={{ 
+                            sx={{
                                 ml: 1,
                                 '&:hover': {
                                     color: '#1976d2'
                                 }
                             }}
                         >
-                            <Badge 
-                                badgeContent={cartItemCount} 
+                            <Badge
+                                badgeContent={cartItemCount}
                                 color="success"
                             >
                                 <ShoppingCartIcon />
