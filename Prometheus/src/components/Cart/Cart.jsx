@@ -14,7 +14,7 @@ const Cart = () => {
     const [cart, setCart] = useAtom(cartAtom);
     const navigate = useNavigate();
 
-    const totalPrice = cart.reduce((total, item) => 
+    const totalPrice = cart.reduce((total, item) =>
         total + (Number(item.price) * item.quantity), 0);
 
     const increaseQuantity = (itemId) => {
@@ -84,7 +84,6 @@ const Cart = () => {
                             <span className="cart-header-actions"></span>
                         </div>
 
-                        {console.log(cart)}
 
                         {cart.map(item => (
                             <div key={item.id} className="cart-item">

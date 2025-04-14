@@ -40,12 +40,7 @@ const Navbar = () => {
     useEffect(() => {
         const getProducts = async () => {
             const products = await fetchProducts();
-
-            console.log(products);
-            console.log(products.filter(products => typeof products.price !== 'number'));
-
             setAllProducts(products);
-
         };
 
         getProducts();
