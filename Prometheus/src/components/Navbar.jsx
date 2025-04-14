@@ -4,126 +4,71 @@ import {
     searchTermAtom,
     cartItemCountAtom,
     unreadNotificationsCountAtom,
-    userAtom,
     productsAtom,
     categoryAtom
 } from '../store/atoms';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-    Box,
-    InputBase,
-    IconButton,
-    Badge,
-    Paper,
-    List,
-    ListItem,
-    ListItemText,
-    Typography,
-    Tooltip
+    Box, InputBase, IconButton, Badge, Paper, List, ListItem, ListItemText, Typography, Tooltip
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ChatIcon from '@mui/icons-material/Chat';
-
-// Hardcoded product data for search
-const allProducts = [
-    // Fruits
-    { id: 1, name: 'New Zealand Apple', price: 12.9, unit: '500g', image: '🍎', category: 'fruits' },
-    { id: 2, name: 'Thai Banana', price: 6.5, unit: 'bunch', image: '🍌', category: 'fruits' },
-    { id: 3, name: 'Dragon Fruit', price: 15.8, unit: 'piece', image: '🐉', category: 'fruits' },
-    { id: 4, name: 'Blueberries', price: 28.9, unit: 'box', image: '🫐', category: 'fruits' },
-    { id: 21, name: 'Watermelon', price: 8.5, unit: 'kg', image: '🍉', category: 'fruits' },
-    { id: 22, name: 'Peach', price: 4.9, unit: 'piece', image: '🍑', category: 'fruits' },
-    { id: 23, name: 'Strawberries', price: 7.9, unit: 'box', image: '🍓', category: 'fruits' },
-    { id: 24, name: 'Oranges', price: 3.5, unit: '4 pack', image: '🍊', category: 'fruits' },
-    { id: 25, name: 'Lemon', price: 1.5, unit: 'piece', image: '🍋', category: 'fruits' },
-    { id: 26, name: 'Green Apple', price: 11.9, unit: '500g', image: '🍏', category: 'fruits' },
-
-    // Vegetables
-    { id: 5, name: 'Organic Broccoli', price: 8.8, unit: '250g', image: '🥦', category: 'vegetables' },
-    { id: 6, name: 'Carrots', price: 3.5, unit: '500g', image: '🥕', category: 'vegetables' },
-    { id: 7, name: 'Cherry Tomatoes', price: 9.9, unit: 'box', image: '🍅', category: 'vegetables' },
-    { id: 8, name: 'Cucumber', price: 4.8, unit: 'piece', image: '🥒', category: 'vegetables' },
-    { id: 27, name: 'Bell Pepper', price: 2.5, unit: 'piece', image: '🫑', category: 'vegetables' },
-    { id: 28, name: 'Potato', price: 5.9, unit: 'kg', image: '🥔', category: 'vegetables' },
-    { id: 29, name: 'Spinach', price: 3.9, unit: 'bunch', image: '🥬', category: 'vegetables' },
-    { id: 30, name: 'Mushrooms', price: 6.5, unit: '250g', image: '🍄', category: 'vegetables' },
-    { id: 31, name: 'Garlic', price: 2.9, unit: 'bulb', image: '🧄', category: 'vegetables' },
-    { id: 32, name: 'Onion', price: 1.9, unit: 'piece', image: '🧅', category: 'vegetables' },
-
-    // Dairy
-    { id: 9, name: 'Plain Yogurt', price: 13.8, unit: '500ml', image: '🥛', category: 'dairy' },
-    { id: 10, name: 'Cheddar Cheese', price: 25.9, unit: '200g', image: '🧀', category: 'dairy' },
-    { id: 11, name: 'Organic Milk', price: 19.8, unit: '1L', image: '🥛', category: 'dairy' },
-    { id: 12, name: 'Butter', price: 18.5, unit: '100g', image: '🧈', category: 'dairy' },
-    { id: 33, name: 'Greek Yogurt', price: 15.8, unit: '500ml', image: '🥛', category: 'dairy' },
-    { id: 34, name: 'Mozzarella', price: 22.9, unit: '200g', image: '🧀', category: 'dairy' },
-    { id: 35, name: 'Cream Cheese', price: 13.5, unit: '200g', image: '🧀', category: 'dairy' },
-    { id: 36, name: 'Sour Cream', price: 9.9, unit: '250ml', image: '🥛', category: 'dairy' },
-
-    // Bakery
-    { id: 13, name: 'Whole Wheat Bread', price: 12.8, unit: 'loaf', image: '🍞', category: 'bakery' },
-    { id: 14, name: 'Croissant', price: 8.9, unit: 'piece', image: '🥐', category: 'bakery' },
-    { id: 15, name: 'Chocolate Muffin', price: 4.5, unit: 'piece', image: '🧁', category: 'bakery' },
-    { id: 16, name: 'Bagel', price: 3.5, unit: 'piece', image: '🥯', category: 'bakery' },
-    { id: 37, name: 'Cinnamon Roll', price: 5.5, unit: 'piece', image: '🧁', category: 'bakery' },
-    { id: 38, name: 'Sourdough Bread', price: 14.9, unit: 'loaf', image: '🍞', category: 'bakery' },
-    { id: 39, name: 'Baguette', price: 7.9, unit: 'piece', image: '🥖', category: 'bakery' },
-    { id: 40, name: 'Pretzel', price: 4.2, unit: 'piece', image: '🥨', category: 'bakery' },
-
-    // Meat
-    { id: 17, name: 'Chicken Breast', price: 24.9, unit: '500g', image: '🍗', category: 'meat' },
-    { id: 18, name: 'Ground Beef', price: 18.5, unit: '250g', image: '🥩', category: 'meat' },
-    { id: 19, name: 'Bacon', price: 11.9, unit: 'pack', image: '🥓', category: 'meat' },
-    { id: 20, name: 'Salmon Fillet', price: 32.9, unit: '200g', image: '🐟', category: 'meat' },
-    { id: 41, name: 'Sausage', price: 15.9, unit: 'pack', image: '🌭', category: 'meat' },
-    { id: 42, name: 'Lamb Chops', price: 28.9, unit: '400g', image: '🍖', category: 'meat' },
-    { id: 43, name: 'Pork Ribs', price: 21.9, unit: '500g', image: '🍖', category: 'meat' },
-    { id: 44, name: 'Shrimp', price: 26.9, unit: '250g', image: '🦐', category: 'meat' }
-];
-
+import { fetchProducts, useDebounce } from '../utils/utils';
 
 
 const Navbar = () => {
+    // Atoms
     const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
     const [cartItemCount] = useAtom(cartItemCountAtom);
     const [unreadCount] = useAtom(unreadNotificationsCountAtom);
-    const [user] = useAtom(userAtom);
+    const [, setProducts] = useAtom(productsAtom);
+    const [, setCategory] = useAtom(categoryAtom);
+    // Local states
     const [searchResults, setSearchResults] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
-    const [, setProducts] = useAtom(productsAtom);
-    const [, setCategory] = useAtom(categoryAtom);
+    const [allProducts, setAllProducts] = useState([]);
+    const debouncedSearchTerm = useDebounce(searchTerm, 500); // set serach latency
     const location = useLocation();
     const navigate = useNavigate();
     const searchRef = useRef(null);
     const inputRef = useRef(null);
 
-    // Check if we're on a page where search should be hidden
-    const hideSearch = ['/cart', '/delivery', '/confirmation'].includes(location.pathname);
+    const hideSearch = ['/cart', '/delivery', '/confirmation', '/messages'].includes(location.pathname);
 
-    // Filter products based on search term
     useEffect(() => {
-        if (searchTerm.trim() === '') {
+        const getProducts = async () => {
+            try {
+                console.log("Fetching products for search:", debouncedSearchTerm);
+                const products = await fetchProducts();
+                setAllProducts(products);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        };
+
+        getProducts();
+    }, [debouncedSearchTerm]);
+
+    useEffect(() => {
+        if (searchTerm.trim() !== '') {
+            const filteredResults = allProducts.filter(product =>
+                product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                product.category.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setSearchResults(filteredResults);
+        } else {
             setSearchResults([]);
-            return;
         }
+    }, [searchTerm, allProducts]);
 
-        const filteredResults = allProducts.filter(product =>
-            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            product.category.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setSearchResults(filteredResults);
-    }, [searchTerm]);
-
-    // Handle search input change
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
         setShowDropdown(true);
         setSelectedIndex(-1);
     };
 
-    // Handle search form submission
     const handleSearchSubmit = (e) => {
         e.preventDefault();
         if (searchTerm.trim()) {
@@ -173,31 +118,11 @@ const Navbar = () => {
         navigate('/');
     };
 
-    // Handle keyboard navigation
     const handleKeyDown = (e) => {
         if (!showDropdown || searchResults.length === 0) return;
-
-        // Arrow down
-        if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            setSelectedIndex(prev => (prev < searchResults.length - 1 ? prev + 1 : 0));
-        }
-
-        // Arrow up
-        else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            setSelectedIndex(prev => (prev > 0 ? prev - 1 : searchResults.length - 1));
-        }
-
-        // Enter to select
         else if (e.key === 'Enter' && selectedIndex >= 0) {
             e.preventDefault();
             selectProduct(searchResults[selectedIndex]);
-        }
-
-        // Escape to close dropdown
-        else if (e.key === 'Escape') {
-            setShowDropdown(false);
         }
     };
 
@@ -304,7 +229,7 @@ const Navbar = () => {
                             >
                                 <SearchIcon sx={{ color: '#aaa', mr: 1 }} />
                                 <InputBase
-                                    placeholder="Search for products, categories, or brands..."
+                                    placeholder="Search products"
                                     value={searchTerm}
                                     onChange={handleSearchChange}
                                     onFocus={() => searchTerm.trim() && setShowDropdown(true)}

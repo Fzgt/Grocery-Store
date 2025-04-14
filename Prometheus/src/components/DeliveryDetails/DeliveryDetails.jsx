@@ -85,24 +85,19 @@ const DeliveryDetails = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    // Mock function to check inventory
     const checkInventory = () => {
-        // Simulate checking inventory
-        // In a real app, this would be an API call
         const issues = [];
 
-        // Randomly check if any items are out of stock (for demo purposes)
-        // In a real app, you would check against actual inventory
-        const randomCheck = Math.random() > 0.7;
+        // const randomCheck = Math.random() > 0.7;
 
-        if (randomCheck && cart.length > 0) {
-            const randomIndex = Math.floor(Math.random() * cart.length);
-            issues.push({
-                productId: cart[randomIndex].id,
-                name: cart[randomIndex].name,
-                reason: 'Item is now out of stock'
-            });
-        }
+        // if (randomCheck && cart.length > 0) {
+        //     const randomIndex = Math.floor(Math.random() * cart.length);
+        //     issues.push({
+        //         productId: cart[randomIndex].id,
+        //         name: cart[randomIndex].name,
+        //         reason: 'Item is now out of stock'
+        //     });
+        // }
 
         return issues;
     };
