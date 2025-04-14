@@ -11,9 +11,8 @@ const productController = {
         });
     },
 
-    // 处理订单并更新库存
     placeOrder: (req, res) => {
-        // 验证请求体
+        // validate request body
         if (!req.body || !req.body.cart || !Array.isArray(req.body.cart) || req.body.cart.length === 0) {
             return res.status(400).send({
                 success: false,
@@ -21,12 +20,12 @@ const productController = {
             });
         }
 
-        // 验证购物车中的每个商品
+        // validate each item in the cart
         const cart = req.body.cart;
-        const isValidCart = cart.every(item => 
-            item && 
-            item.id && 
-            typeof item.quantity === 'number' && 
+        const isValidCart = cart.every(item =>
+            item &&
+            item.id &&
+            typeof item.quantity === 'number' &&
             item.quantity > 0
         );
 
@@ -37,7 +36,7 @@ const productController = {
             });
         }
 
-        // 调用模型方法检查并更新库存
+        // check stock and update order function in model
         Product.checkAndUpdateStock(cart, (err, data) => {
             if (err) {
                 return res.status(500).send({
@@ -46,12 +45,11 @@ const productController = {
                 });
             }
 
-            // 根据库存检查结果返回相应状态码
             if (!data.success) {
-                return res.status(409).send(data); // 409 Conflict - 库存不足
+                return res.status(409).send(data); // 409 Conflict - out of stock
             }
 
-            res.status(200).send(data); // 200 OK - 订单成功
+            res.status(200).send(data); // 200 OK - order placed successfully
         });
     }
 };
