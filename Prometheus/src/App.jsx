@@ -7,7 +7,6 @@ import { useAtom } from 'jotai';
 import { cartAtom } from './store/atoms';
 import { loadCartFromStorage } from './utils/cartUtils';
 
-// 主页组件
 const HomePage = () => (
   <div style={{ padding: '16px', backgroundColor: '#121212' }}>
     <div className="home-grid">
@@ -21,7 +20,6 @@ const HomePage = () => (
   </div>
 )
 
-// Layout component to conditionally render children with/without categories
 const Layout = ({ children }) => {
   const location = useLocation();
   const hideCategories = ['/cart', '/delivery', '/confirmation', '/messages'].includes(location.pathname);
@@ -46,7 +44,7 @@ const Layout = ({ children }) => {
 
 const App = () => {
   const [, setCart] = useAtom(cartAtom);
-  
+
   // Load cart from localStorage on initial app load
   useEffect(() => {
     const savedCart = loadCartFromStorage();
@@ -54,17 +52,17 @@ const App = () => {
       setCart(savedCart);
     }
   }, [setCart]);
-  
+
   return (
     <BrowserRouter>
-      <div style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        minHeight: '100vh', 
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
         backgroundColor: '#121212'
       }}>
         <Navbar />
-        
+
         <div style={{ flex: '1 0 auto' }}>
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -90,7 +88,7 @@ const App = () => {
             } />
           </Routes>
         </div>
-        
+
         <Footer />
       </div>
     </BrowserRouter>

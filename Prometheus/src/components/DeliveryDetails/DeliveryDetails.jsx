@@ -1,17 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { cartAtom } from '../store/atoms';
+import { cartAtom } from '../../store/atoms';
 import { useNavigate } from 'react-router-dom';
-import { clearCartFromStorage } from '../utils/cartUtils';
+import { clearCartFromStorage } from '../../utils/cartUtils';
 import './DeliveryDetails.css';
 
-// Storage key for cart
-const STORAGE_KEY = 'beyz-cart';
 
 const DeliveryDetails = () => {
     const [cart, setCart] = useAtom(cartAtom);
     const navigate = useNavigate();
-    
+
     // Form state
     const [formData, setFormData] = useState({
         name: '',
@@ -21,27 +19,27 @@ const DeliveryDetails = () => {
         city: '',
         state: 'NSW',
     });
-    
+
     // Error state
     const [errors, setErrors] = useState({});
-    
+
     // Check stock before order is placed
     const [stockIssues, setStockIssues] = useState([]);
-    
+
     // Redirect to cart if empty
     useEffect(() => {
         if (cart.length === 0) {
             navigate('/cart');
         }
     }, [cart, navigate]);
-    
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
             ...formData,
             [name]: value
         });
-        
+
         // Clear error when field is changed
         if (errors[name]) {
             setErrors({
@@ -50,53 +48,53 @@ const DeliveryDetails = () => {
             });
         }
     };
-    
+
     const validateForm = () => {
         const newErrors = {};
-        
+
         // Name validation
         if (!formData.name.trim()) {
             newErrors.name = 'Name is required';
         }
-        
+
         // Email validation
         if (!formData.email.trim()) {
             newErrors.email = 'Email is required';
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
             newErrors.email = 'Email is invalid';
         }
-        
+
         // Mobile validation
         if (!formData.mobile.trim()) {
             newErrors.mobile = 'Mobile number is required';
         } else if (!/^\d{10}$/.test(formData.mobile.replace(/\s/g, ''))) {
             newErrors.mobile = 'Mobile number must be 10 digits';
         }
-        
+
         // Street validation
         if (!formData.street.trim()) {
             newErrors.street = 'Street address is required';
         }
-        
+
         // City validation
         if (!formData.city.trim()) {
             newErrors.city = 'City/Suburb is required';
         }
-        
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
-    
+
     // Mock function to check inventory
     const checkInventory = () => {
         // Simulate checking inventory
         // In a real app, this would be an API call
         const issues = [];
-        
+
         // Randomly check if any items are out of stock (for demo purposes)
         // In a real app, you would check against actual inventory
         const randomCheck = Math.random() > 0.7;
-        
+
         if (randomCheck && cart.length > 0) {
             const randomIndex = Math.floor(Math.random() * cart.length);
             issues.push({
@@ -105,37 +103,37 @@ const DeliveryDetails = () => {
                 reason: 'Item is now out of stock'
             });
         }
-        
+
         return issues;
     };
-    
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+
         // Validate form
         if (!validateForm()) {
             return;
         }
-        
+
         // Check inventory before processing
         const inventoryIssues = checkInventory();
-        
+
         if (inventoryIssues.length > 0) {
             setStockIssues(inventoryIssues);
             return;
         }
-        
+
         // Order placed successfully - clear the cart in localStorage
         clearCartFromStorage();
-        
+
         // If no issues, proceed to confirmation
         navigate('/confirmation', { state: { formData } });
     };
-    
+
     return (
         <div className="delivery-details-container">
             <h1>Delivery Details</h1>
-            
+
             {stockIssues.length > 0 ? (
                 <div className="stock-issues">
                     <h2>Order Cannot Be Placed</h2>
@@ -147,7 +145,7 @@ const DeliveryDetails = () => {
                             </li>
                         ))}
                     </ul>
-                    <button 
+                    <button
                         className="return-to-cart-button"
                         onClick={() => navigate('/cart')}
                     >
@@ -168,7 +166,7 @@ const DeliveryDetails = () => {
                         />
                         {errors.name && <span className="error-message">{errors.name}</span>}
                     </div>
-                    
+
                     <div className="form-field">
                         <label htmlFor="email">Email Address <span className="required">*</span></label>
                         <input
@@ -181,7 +179,7 @@ const DeliveryDetails = () => {
                         />
                         {errors.email && <span className="error-message">{errors.email}</span>}
                     </div>
-                    
+
                     <div className="form-field">
                         <label htmlFor="mobile">Mobile Number <span className="required">*</span></label>
                         <input
@@ -195,7 +193,7 @@ const DeliveryDetails = () => {
                         />
                         {errors.mobile && <span className="error-message">{errors.mobile}</span>}
                     </div>
-                    
+
                     <div className="form-field">
                         <label htmlFor="street">Street Address <span className="required">*</span></label>
                         <input
@@ -208,7 +206,7 @@ const DeliveryDetails = () => {
                         />
                         {errors.street && <span className="error-message">{errors.street}</span>}
                     </div>
-                    
+
                     <div className="form-field">
                         <label htmlFor="city">City/Suburb <span className="required">*</span></label>
                         <input
@@ -221,7 +219,7 @@ const DeliveryDetails = () => {
                         />
                         {errors.city && <span className="error-message">{errors.city}</span>}
                     </div>
-                    
+
                     <div className="form-field">
                         <label htmlFor="state">State <span className="required">*</span></label>
                         <select
@@ -241,17 +239,17 @@ const DeliveryDetails = () => {
                             <option value="OTHER">Others</option>
                         </select>
                     </div>
-                    
+
                     <div className="form-actions">
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             className="cancel-button"
                             onClick={() => navigate('/cart')}
                         >
                             Back to Cart
                         </button>
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             className="submit-button"
                             disabled={Object.keys(errors).length > 0 && Object.values(errors).some(error => error)}
                         >
