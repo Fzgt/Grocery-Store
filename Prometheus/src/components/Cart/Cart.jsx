@@ -1,24 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { cartAtom } from '../../store/atoms';
+import { cartAtom, notificationsAtom } from '../../store/atoms';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { saveCartToStorage, clearCartFromStorage } from '../../utils/cartUtils';
-import { placeOrder } from '../../utils/utils';
 import './Cart.css';
 
 
 const Cart = () => {
     const [cart, setCart] = useAtom(cartAtom);
-    const [loading, setLoading] = useState(false);
-    const [orderError, setOrderError] = useState(null);
+    const [notifications, setNotifications] = useAtom(notificationsAtom);
     const navigate = useNavigate();
+    const location = useLocation();
 
 
     const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    const totalQuantity = cart.reduce((total, item) => total + item.quantity, 0);
 
     const increaseQuantity = (itemId) => {
         const newCart = cart.map(item =>
@@ -51,36 +51,10 @@ const Cart = () => {
         clearCartFromStorage();
     };
 
-    const handlePlaceOrder = async () => {
+    // 简化的下单流程，只负责导航到配送页面
+    const handlePlaceOrder = () => {
         if (cart.length === 0) return;
-
-        setLoading(true);
-        setOrderError(null);
-
-        try {
-            const response = await placeOrder(cart);
-
-            if (response.success) {
-                navigate('/delivery');
-            } else {
-                setOrderError({
-                    message: response.message || 'Order processing failed',
-                    insufficientItems: response.insufficientItems || []
-                });
-            }
-        } catch (error) {
-            console.error('Place order error:', error);
-            setOrderError({
-                message: 'Network error occurred while processing the order',
-                insufficientItems: []
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const dismissError = () => {
-        setOrderError(null);
+        navigate('/delivery');
     };
 
     useEffect(() => {
@@ -93,29 +67,7 @@ const Cart = () => {
     return (
         <div className="cart-page">
             <h1 className="cart-title">Shopping Cart</h1>
-
-            {orderError && (
-                <div className="order-error-container">
-                    <div className="order-error">
-                        <h3>Order processing failed</h3>
-                        <p>{orderError.message}</p>
-                        {orderError.insufficientItems && orderError.insufficientItems.length > 0 && (
-                            <div>
-                                <p>Out of Stock Items:</p>
-                                <ul>
-                                    {orderError.insufficientItems.map(item => (
-                                        <li key={item.id}>
-                                            {item.name} - Need: {item.requestedQuantity}, Available: {item.availableQuantity}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-                        <button onClick={dismissError}>Close</button>
-                    </div>
-                </div>
-            )}
-
+            
             {cart.length === 0 ? (
                 <div className="empty-cart">
                     <ShoppingCartIcon style={{ fontSize: 60, opacity: 0.7 }} />
@@ -197,16 +149,15 @@ const Cart = () => {
                             <button
                                 className="clear-cart-button"
                                 onClick={clearCart}
-                                disabled={loading}
                             >
                                 Clear Cart
                             </button>
                             <button
                                 className={`checkout-button ${cart.length === 0 ? 'disabled' : ''}`}
                                 onClick={handlePlaceOrder}
-                                disabled={cart.length === 0 || loading}
+                                disabled={cart.length === 0}
                             >
-                                {loading ? 'Processing...' : 'Place Order'}
+                                Proceed to Checkout
                             </button>
                         </div>
                     </div>

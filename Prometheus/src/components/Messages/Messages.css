@@ -1,0 +1,196 @@
+.messages-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #e0e0e0;
+}
+
+.messages-title {
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #ffffff;
+  border-bottom: 1px solid #333;
+  padding-bottom: 10px;
+}
+
+.messages-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.clear-all-button {
+  background-color: transparent;
+  border: 1px solid #666;
+  color: #e0e0e0;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clear-all-button:hover {
+  background-color: #2a2a2a;
+}
+
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.notification-item {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 4px solid #666;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-message {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.notification-time {
+  font-size: 12px;
+  color: #999;
+}
+
+.notification-delete {
+  background-color: transparent;
+  border: none;
+  color: #999;
+  font-size: 20px;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.notification-delete:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* 通知类型样式 */
+.notification-success {
+  border-left-color: #4caf50;
+}
+
+.notification-error {
+  border-left-color: #f44336;
+}
+
+.notification-warning {
+  border-left-color: #ff9800;
+}
+
+.notification-info {
+  border-left-color: #2196f3;
+}
+
+/* 空通知状态 */
+.no-notifications {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  padding: 60px 20px;
+  text-align: center;
+  min-height: 300px;
+}
+
+.empty-icon {
+  font-size: 50px;
+  margin-bottom: 20px;
+}
+
+.no-notifications p {
+  color: #999;
+  font-size: 18px;
+} 
+.order-details {
+  background-color: #252525;
+  border-radius: 6px;
+  padding: 15px;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.order-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #333;
+}
+
+.order-recipient, .order-address, .order-date {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.detail-label {
+  font-size: 12px;
+  color: #999;
+}
+
+.order-items-header {
+  display: grid;
+  grid-template-columns: 2fr 0.5fr 0.8fr 0.8fr;
+  gap: 10px;
+  padding: 8px 5px;
+  border-bottom: 1px solid #333;
+  font-weight: 500;
+  color: #ccc;
+  font-size: 13px;
+}
+
+.order-item {
+  display: grid;
+  grid-template-columns: 2fr 0.5fr 0.8fr 0.8fr;
+  gap: 10px;
+  padding: 10px 5px;
+  border-bottom: 1px solid #333;
+  align-items: center;
+}
+
+.item-quantity {
+  color: #999;
+}
+
+.order-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 5px 5px;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .order-info {
+    grid-template-columns: 1fr;
+  }
+  
+  .order-items-header, .order-item {
+    grid-template-columns: 1.5fr 0.5fr 0.8fr 0.8fr;
+    font-size: 12px;
+  }
+} 

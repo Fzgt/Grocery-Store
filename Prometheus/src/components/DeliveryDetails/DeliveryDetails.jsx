@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { cartAtom } from '../../store/atoms';
+import { cartAtom, notificationsAtom } from '../../store/atoms';
 import { useNavigate } from 'react-router-dom';
 import { clearCartFromStorage } from '../../utils/cartUtils';
+import { placeOrder } from '../../utils/utils';
 import './DeliveryDetails.css';
 
 
 const DeliveryDetails = () => {
     const [cart, setCart] = useAtom(cartAtom);
+    const [notifications, setNotifications] = useAtom(notificationsAtom);
     const navigate = useNavigate();
 
     // Form state
@@ -22,6 +24,9 @@ const DeliveryDetails = () => {
 
     // Error state
     const [errors, setErrors] = useState({});
+    
+    // 订单处理状态
+    const [loading, setLoading] = useState(false);
 
     // Check stock before order is placed
     const [stockIssues, setStockIssues] = useState([]);
@@ -85,43 +90,91 @@ const DeliveryDetails = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const checkInventory = () => {
-        const issues = [];
-
-        // const randomCheck = Math.random() > 0.7;
-
-        // if (randomCheck && cart.length > 0) {
-        //     const randomIndex = Math.floor(Math.random() * cart.length);
-        //     issues.push({
-        //         productId: cart[randomIndex].id,
-        //         name: cart[randomIndex].name,
-        //         reason: 'Item is now out of stock'
-        //     });
-        // }
-
-        return issues;
+    const checkInventory = async () => {
+        try {
+            setLoading(true);
+            
+            // 调用后端API检查库存并下单
+            const response = await placeOrder(cart);
+            
+            if (!response.success) {
+                // 库存不足或其他错误
+                if (response.insufficientItems && response.insufficientItems.length > 0) {
+                    // 将库存不足信息转换为stockIssues格式
+                    return response.insufficientItems.map(item => ({
+                        productId: item.id,
+                        name: item.name,
+                        reason: `Requested: ${item.requestedQuantity}, Available: ${item.availableQuantity}`
+                    }));
+                } else {
+                    // 其他API错误
+                    return [{
+                        productId: 'error',
+                        name: 'Order Error',
+                        reason: response.message || 'An error occurred while processing your order'
+                    }];
+                }
+            }
+            
+            // 订单成功，返回空数组表示没有库存问题
+            return [];
+        } catch (error) {
+            console.error('Error checking inventory:', error);
+            // 网络错误
+            return [{
+                productId: 'network-error',
+                name: 'Connection Error',
+                reason: 'Unable to connect to the server. Please try again later.'
+            }];
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validate form
         if (!validateForm()) {
             return;
         }
 
-        // Check inventory before processing
-        const inventoryIssues = checkInventory();
+        // 执行库存检查和下单
+        const inventoryIssues = await checkInventory();
 
         if (inventoryIssues.length > 0) {
             setStockIssues(inventoryIssues);
             return;
         }
 
-        // Order placed successfully - clear the cart in localStorage
+        // 订单已成功处理 - 清空购物车
+        setCart([]);
         clearCartFromStorage();
+        
+        // 添加订单成功通知
+        setNotifications(prev => [
+            { 
+                id: Date.now(), 
+                message: 'Order placed successfully!', 
+                type: 'success',
+                read: false,
+                orderDetails: {
+                    items: cart.map(item => ({
+                        id: item.id,
+                        name: item.name,
+                        quantity: item.quantity,
+                        price: item.price,
+                        total: item.price * item.quantity
+                    })),
+                    totalAmount: cart.reduce((total, item) => total + (item.price * item.quantity), 0),
+                    orderDate: new Date().toISOString(),
+                    shippingAddress: `${formData.street}, ${formData.city}, ${formData.state}`,
+                    recipient: formData.name
+                }
+            }, 
+            ...prev
+        ]);
 
-        // If no issues, proceed to confirmation
+        // 前往订单确认页
         navigate('/confirmation', { state: { formData } });
     };
 
@@ -132,7 +185,7 @@ const DeliveryDetails = () => {
             {stockIssues.length > 0 ? (
                 <div className="stock-issues">
                     <h2>Order Cannot Be Placed</h2>
-                    <p>The following items are no longer available:</p>
+                    <p>The following issues were found:</p>
                     <ul>
                         {stockIssues.map(issue => (
                             <li key={issue.productId}>
@@ -240,15 +293,16 @@ const DeliveryDetails = () => {
                             type="button"
                             className="cancel-button"
                             onClick={() => navigate('/cart')}
+                            disabled={loading}
                         >
                             Back to Cart
                         </button>
                         <button
                             type="submit"
                             className="submit-button"
-                            disabled={Object.keys(errors).length > 0 && Object.values(errors).some(error => error)}
+                            disabled={(Object.keys(errors).length > 0 && Object.values(errors).some(error => error)) || loading}
                         >
-                            Submit Order
+                            {loading ? 'Processing...' : 'Submit Order'}
                         </button>
                     </div>
                 </form>
